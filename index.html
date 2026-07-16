@@ -607,7 +607,7 @@ let cargados = new Set();
 async function autoCargar() {
   for (const nombre of ARCHIVOS_ESPERADOS) {
     try {
-      const r = await fetch(nombre + "?" + Date.now());
+      const r = await fetch("xls/" + nombre + "?" + Date.now());
       if (!r.ok) continue;
       const buf = await r.arrayBuffer();
       const res = parsearIngresos(buf, nombre);
@@ -616,7 +616,7 @@ async function autoCargar() {
         cargados.add(nombre);
         actualizarFileList();
         render();
-        console.log("[MPL] Auto-cargado:", nombre, "→ tipo:", res.tipo,
+        console.log("[MPL] Auto-cargado: xls/" + nombre, "→ tipo:", res.tipo,
                     "| registros:", res.registros.length,
                     "| PIM:", res.totalPIM, "| Rec:", res.totalRec);
       }
