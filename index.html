@@ -217,8 +217,8 @@ main{padding:28px 0 60px}
 <main>
 <div class="wrap">
 
-  <!-- Botón PDF -->
-  <div style="display:flex;justify-content:flex-end;margin-bottom:18px">
+  <!-- Barra superior: PDF + engranaje técnico (igual que GORE) -->
+  <div style="display:flex;justify-content:flex-end;align-items:center;gap:10px;margin-bottom:18px">
     <button class="btn-pdf" onclick="exportarPDF()">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
         <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
@@ -228,9 +228,13 @@ main{padding:28px 0 60px}
       </svg>
       Exportar PDF
     </button>
+    <button id="btnAdminToggle" title="Panel técnico (solo ORAD)"
+      style="background:transparent;border:1px solid var(--linea);border-radius:6px;
+             width:30px;height:30px;cursor:pointer;font-size:15px;opacity:.4;line-height:1;padding:0">⚙</button>
   </div>
 
-  <!-- ── CARGADOR ── -->
+  <!-- ── CARGADOR — oculto al jefe, visible solo si ORAD activa el engranaje ⚙ ── -->
+  <div id="panelTecnico" style="display:none">
   <div class="loader-card" id="loaderCard">
     <div class="drop-col">
       <div class="dropzone" id="dropzone" tabindex="0" role="button">
@@ -260,6 +264,21 @@ main{padding:28px 0 60px}
       </div>
     </div>
   </div>
+  </div><!-- /panelTecnico -->
+
+  <script>
+    /* Panel técnico oculto por defecto.
+       (a) Clic en el engranaje ⚙ lo muestra/oculta.
+       (b) URL con ?admin=1 lo abre directamente (útil desde el celular). */
+    (function(){
+      var panel = document.getElementById("panelTecnico");
+      var btn   = document.getElementById("btnAdminToggle");
+      if(new URLSearchParams(location.search).get("admin") === "1") panel.style.display = "";
+      btn.addEventListener("click", function(){
+        panel.style.display = panel.style.display === "none" ? "" : "none";
+      });
+    })();
+  </script>
 
   <!-- ══ BLOQUE 1 — KPIs ══ -->
   <div class="bloque">
