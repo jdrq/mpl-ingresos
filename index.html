@@ -10,6 +10,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
 :root{
   --rojo:#9a1820; --rojo-osc:#7a1219; --dorado:#fcc21b; --dorado-osc:#d9a000;
@@ -421,6 +422,24 @@ main{padding:28px 0 60px}
     </div>
   </div>
 
+  <!-- ══ BLOQUE 6 — COMPARATIVO ENE–JUL 2022–2026 ══ -->
+  <div class="bloque" id="b6bloque">
+    <div class="bloque-header">
+      <div class="bloque-titulo">COMPARATIVO HISTÓRICO — RECAUDADO ENE–JUL (2022–2026)</div>
+      <div class="bloque-meta">Mun. Prov. Lambayeque · <span id="b6fecha">2026</span></div>
+    </div>
+    <div class="bloque-body">
+      <div id="b6kpis" style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:20px"></div>
+      <div style="position:relative;height:320px;background:#fff;border-radius:10px;padding:8px 0 0 0">
+        <canvas id="b6chart"></canvas>
+      </div>
+      <p style="margin:10px 0 0 0;font-size:11px;color:#888;font-family:'Barlow'">
+        Fuente: Consulta Amigable MEF · 2022–2025: acumulado Ene–Jul (meses 1 a 7) de archivos anuales hardcodeados ·
+        2026: acumulado diario desde <code>rubro.xls</code> (fila total MPL)
+      </p>
+    </div>
+  </div>
+
 </div><!-- .wrap -->
 </main>
 
@@ -693,6 +712,7 @@ function render() {
   renderB3();
   renderB4();
   renderB5();
+  renderB6();
 }
 
 // ── BLOQUE 1 — KPIs ─────────────────────────────────────────────
@@ -945,6 +965,163 @@ dz.addEventListener("drop", e => {
 // EXPORTAR PDF
 // ─────────────────────────────────────────────────────────────────
 let pdfLibsCargadas = false;
+// ── BLOQUE 6 — COMPARATIVO HISTÓRICO ENE–JUL ─────────────────────
+// Datos 2022–2025: hardcodeados (Tabla 3 archivos anuales, meses 1–7 sumados)
+// Datos 2026    : extraídos en tiempo real del rubro.xls cargado a diario
+const B6_HIST = {
+  2022: 71265532,   // INGRESOS2022.xls  Ene–Jul (meses 1–7 sumados)
+  2023: 68248027,   // INGRESOS2023.xls
+  2024: 68765383,   // INGRESOS2024.xls
+  2025: 71764730,   // INGRESOS2025.xls
+};
+
+let b6ChartInstance = null;
+
+function renderB6() {
+  // 1) Obtener recaudado 2026 desde rubro.xls ya parseado
+  //    La variable global "datos" tiene estructura: { rubro: {tipo, totalPIA, totalPIM, totalRec, registros}, ... }
+  let dev2026 = 0;
+  if (typeof datos !== "undefined" && datos.rubro) {
+    dev2026 = datos.rubro.totalRec || 0;
+  }
+
+  const años   = [2022, 2023, 2024, 2025, 2026];
+  const valores = [
+    B6_HIST[2022],
+    B6_HIST[2023],
+    B6_HIST[2024],
+    B6_HIST[2025],
+    dev2026,
+  ];
+
+  // 2) KPIs pequeños por año
+  const fmtM = n => {
+    if (!n) return "S/ —";
+    if (n >= 1e6) return "S/ " + (n/1e6).toLocaleString("es-PE",{minimumFractionDigits:1,maximumFractionDigits:1}) + " M";
+    return "S/ " + Math.round(n).toLocaleString("es-PE");
+  };
+  const kpiContainer = document.getElementById("b6kpis");
+  if (kpiContainer) {
+    kpiContainer.innerHTML = años.map((a, i) => {
+      const v = valores[i];
+      const es2026 = a === 2026;
+      const prev = i > 0 ? valores[i-1] : null;
+      let deltaHtml = "";
+      if (prev && prev > 0 && v > 0) {
+        const pct = ((v - prev) / prev * 100);
+        const color = pct >= 0 ? "#2a7d46" : "#c0392b";
+        const signo = pct >= 0 ? "▲" : "▼";
+        deltaHtml = `<span style="font-size:10px;color:${color};font-weight:700">${signo} ${Math.abs(pct).toFixed(1)}%</span>`;
+      }
+      return `
+        <div style="background:${es2026?"#fef3c7":"#f9fafb"};border:1px solid ${es2026?"#fbbf24":"#e5e7eb"};
+             border-radius:10px;padding:10px 16px;min-width:110px;flex:1;text-align:center">
+          <div style="font-family:'Barlow Condensed';font-size:13px;font-weight:700;color:#6b7280;margin-bottom:3px">
+            Ene–Jul ${a}${es2026?" ★":""}
+          </div>
+          <div style="font-family:'Barlow Condensed';font-size:18px;font-weight:800;
+               color:${es2026?"#92400e":"#1f2937"}">
+            ${v ? fmtM(v) : "Cargando…"}
+          </div>
+          <div style="margin-top:3px">${deltaHtml}</div>
+        </div>`;
+    }).join("");
+  }
+
+  // 3) Gráfico
+  const canvas = document.getElementById("b6chart");
+  if (!canvas) return;
+
+  // Destruir instancia anterior si existe
+  if (b6ChartInstance) {
+    b6ChartInstance.destroy();
+    b6ChartInstance = null;
+  }
+
+  const colores = años.map(a => a === 2026 ? "#FFC526" : "#9a1820");
+  const borderColores = años.map(a => a === 2026 ? "#d9a000" : "#7a1219");
+
+  b6ChartInstance = new Chart(canvas, {
+    type: "bar",
+    data: {
+      labels: años.map(a => `Ene–Jul ${a}${a===2026?" ★":""}`),
+      datasets: [{
+        label: "Recaudado Ene–Jul",
+        data: valores,
+        backgroundColor: colores,
+        borderColor: borderColores,
+        borderWidth: 2,
+        borderRadius: 6,
+        borderSkipped: false,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: ctx => {
+              const v = ctx.raw;
+              if (!v) return " Sin datos";
+              return ` S/ ${Math.round(v).toLocaleString("es-PE")}`;
+            }
+          }
+        },
+        // Etiquetas encima de cada barra
+        datalabels: { display: false }
+      },
+      scales: {
+        x: {
+          grid: { display: false },
+          ticks: {
+            font: { family: "'Barlow Condensed'", weight: "700", size: 12 },
+            color: ctx => ctx.index === 4 ? "#92400e" : "#374151"
+          }
+        },
+        y: {
+          beginAtZero: false,
+          ticks: {
+            callback: v => {
+              if (v >= 1e6) return "S/ " + (v/1e6).toFixed(1) + " M";
+              if (v >= 1e3) return "S/ " + (v/1e3).toFixed(0) + " K";
+              return "S/ " + v;
+            },
+            font: { family: "'Barlow'", size: 11 },
+            color: "#6b7280"
+          },
+          grid: { color: "#f3f4f6" }
+        }
+      },
+      animation: { duration: 600 }
+    },
+    // Plugin inline para mostrar valores sobre las barras
+    plugins: [{
+      id: "b6Labels",
+      afterDatasetsDraw(chart) {
+        const { ctx, data } = chart;
+        ctx.save();
+        data.datasets[0].data.forEach((value, i) => {
+          if (!value) return;
+          const meta = chart.getDatasetMeta(0);
+          const bar  = meta.data[i];
+          const x = bar.x;
+          const y = bar.y - 8;
+          const txt = "S/ " + (value/1e6).toLocaleString("es-PE",
+                        {minimumFractionDigits:1,maximumFractionDigits:1}) + " M";
+          ctx.fillStyle   = i === 4 ? "#92400e" : "#7a1219";
+          ctx.font        = `700 12px 'Barlow Condensed'`;
+          ctx.textAlign   = "center";
+          ctx.textBaseline = "bottom";
+          ctx.fillText(txt, x, y);
+        });
+        ctx.restore();
+      }
+    }]
+  });
+}
+
 function exportarPDF() {
   if (!pdfLibsCargadas) {
     const s1 = document.createElement("script");
