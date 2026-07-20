@@ -422,10 +422,10 @@ main{padding:28px 0 60px}
     </div>
   </div>
 
-  <!-- ══ BLOQUE 6 — COMPARATIVO ENE–JUL 2022–2026 ══ -->
+  <!-- ══ BLOQUE 6 — COMPARATIVO ENE–JUL 2020–2026 ══ -->
   <div class="bloque" id="b6bloque">
     <div class="bloque-header">
-      <div class="bloque-titulo">COMPARATIVO HISTÓRICO — RECAUDADO ENE–JUL (2022–2026)</div>
+      <div class="bloque-titulo">COMPARATIVO HISTÓRICO — RECAUDADO ENE–JUL (2020–2026)</div>
       <div class="bloque-meta">Mun. Prov. Lambayeque · <span id="b6fecha">2026</span></div>
     </div>
     <div class="bloque-body">
@@ -434,7 +434,7 @@ main{padding:28px 0 60px}
         <canvas id="b6chart"></canvas>
       </div>
       <p style="margin:10px 0 0 0;font-size:11px;color:#888;font-family:'Barlow'">
-        Fuente: Consulta Amigable MEF · 2022–2025: acumulado Ene–Jul (meses 1 a 7) de archivos anuales hardcodeados ·
+        Fuente: Consulta Amigable MEF · 2020–2025: acumulado Ene–Jul (meses 1 a 7) de archivos anuales hardcodeados ·
         2026: acumulado diario desde <code>rubro.xls</code> (fila total MPL)
       </p>
     </div>
@@ -966,9 +966,11 @@ dz.addEventListener("drop", e => {
 // ─────────────────────────────────────────────────────────────────
 let pdfLibsCargadas = false;
 // ── BLOQUE 6 — COMPARATIVO HISTÓRICO ENE–JUL ─────────────────────
-// Datos 2022–2025: hardcodeados (Tabla 3 archivos anuales, meses 1–7 sumados)
+// Datos 2021–2025: hardcodeados (Tabla 3 archivos anuales, meses 1–7 sumados)
 // Datos 2026    : extraídos en tiempo real del rubro.xls cargado a diario
 const B6_HIST = {
+  2020: 51337998,   // INGRESOS2020.xls  Ene–Jul (meses 1–7 sumados) — año COVID
+  2021: 83352435,   // INGRESOS2021.xls  Ene–Jul (meses 1–7 sumados)
   2022: 71265532,   // INGRESOS2022.xls  Ene–Jul (meses 1–7 sumados)
   2023: 68248027,   // INGRESOS2023.xls
   2024: 68765383,   // INGRESOS2024.xls
@@ -985,8 +987,10 @@ function renderB6() {
     dev2026 = datos.rubro.totalRec || 0;
   }
 
-  const años   = [2022, 2023, 2024, 2025, 2026];
+  const años   = [2020, 2021, 2022, 2023, 2024, 2025, 2026];
   const valores = [
+    B6_HIST[2020],
+    B6_HIST[2021],
     B6_HIST[2022],
     B6_HIST[2023],
     B6_HIST[2024],
