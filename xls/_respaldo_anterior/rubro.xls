@@ -143,7 +143,7 @@ body
 </style><body>
 	<table id="hd">
 		<tr>
-			<td colspan="4"><div class='title'><img src='../Images/Transparencia.gif' alt='' height='40' /><br /><br />Consulta Amigable de Ingresos</div><div class='subtitle'>Presupuesto y Ejecución de Ingresos</div><br /><div class='fecha'>Fecha de la Consulta: 20-julio-2026</div><br /><b>Año de Ejecución: <span class='value'>2026</span><br /></td>
+			<td colspan="4"><div class='title'><img src='../Images/Transparencia.gif' alt='' height='40' /><br /><br />Consulta Amigable de Ingresos</div><div class='subtitle'>Presupuesto y Ejecución de Ingresos</div><br /><div class='fecha'>Fecha de la Consulta: 16-julio-2026</div><br /><b>Año de Ejecución: <span class='value'>2026</span><br /></td>
 		</tr>
 	</table>
 	
@@ -159,10 +159,10 @@ body
                             86,322,078,932
                         </td>
                         <td align="right" style="width: 100px; white-space: nowrap">
-                            106,757,727,289
+                            106,203,203,811
                         </td>
                         <td align="right" style="width: 100px; white-space: nowrap">
-                            77,375,010,299
+                            76,397,278,839
                         </td>
                     </tr>
                 
@@ -176,10 +176,10 @@ body
                             30,394,734,607
                         </td>
                         <td align="right" style="width: 100px; white-space: nowrap">
-                            42,751,184,317
+                            42,538,873,125
                         </td>
                         <td align="right" style="width: 100px; white-space: nowrap">
-                            31,429,741,249
+                            31,113,602,649
                         </td>
                     </tr>
                 
@@ -193,10 +193,10 @@ body
                             30,394,734,607
                         </td>
                         <td align="right" style="width: 100px; white-space: nowrap">
-                            42,746,880,974
+                            42,534,572,282
                         </td>
                         <td align="right" style="width: 100px; white-space: nowrap">
-                            31,424,354,002
+                            31,108,216,402
                         </td>
                     </tr>
                 
@@ -210,10 +210,10 @@ body
                             657,942,261
                         </td>
                         <td align="right" style="width: 100px; white-space: nowrap">
-                            963,632,896
+                            963,571,886
                         </td>
                         <td align="right" style="width: 100px; white-space: nowrap">
-                            606,737,115
+                            604,418,835
                         </td>
                     </tr>
                 
@@ -237,52 +237,70 @@ body
                     </table>
                 <table id="CPH1_Mt0" class="MapTable" style="width:100%;">
 		<tr id="CPH1_Mt0_Row0">
-			<td id="CPH1_Mt0_td1" title="Concepto" onclick="__doPostBack(&#39;ctl00$CPH1$Mt0$td1&#39;,&#39;&#39;)" onmouseover="this.style.backgroundColor = &#39;#568AC1&#39;;" onmouseout="this.style.backgroundColor = &#39;&#39;;" style="cursor:hand;">Fuente de Financiamiento</td><td id="CPH1_Mt0_td2" title="Presupuesto Institucional de Apertura" onclick="__doPostBack(&#39;ctl00$CPH1$Mt0$td2&#39;,&#39;&#39;)" onmouseover="this.style.backgroundColor = &#39;#568AC1&#39;;" onmouseout="this.style.backgroundColor = &#39;&#39;;" style="width:100px;white-space:nowrap;cursor:hand;">PIA</td><td id="CPH1_Mt0_td3" title="Presupuesto Institucional Modificado" onclick="__doPostBack(&#39;ctl00$CPH1$Mt0$td3&#39;,&#39;&#39;)" onmouseover="this.style.backgroundColor = &#39;#568AC1&#39;;" onmouseout="this.style.backgroundColor = &#39;&#39;;" style="width:100px;white-space:nowrap;cursor:hand;">PIM</td><td id="CPH1_Mt0_td4" title="Recaudado" onclick="__doPostBack(&#39;ctl00$CPH1$Mt0$td4&#39;,&#39;&#39;)" onmouseover="this.style.backgroundColor = &#39;#568AC1&#39;;" onmouseout="this.style.backgroundColor = &#39;&#39;;" style="width:100px;white-space:nowrap;cursor:hand;">Recaudado</td>
+			<td id="CPH1_Mt0_td1" title="Concepto" onclick="__doPostBack(&#39;ctl00$CPH1$Mt0$td1&#39;,&#39;&#39;)" onmouseover="this.style.backgroundColor = &#39;#568AC1&#39;;" onmouseout="this.style.backgroundColor = &#39;&#39;;" style="cursor:hand;">Rubro</td><td id="CPH1_Mt0_td2" title="Presupuesto Institucional de Apertura" onclick="__doPostBack(&#39;ctl00$CPH1$Mt0$td2&#39;,&#39;&#39;)" onmouseover="this.style.backgroundColor = &#39;#568AC1&#39;;" onmouseout="this.style.backgroundColor = &#39;&#39;;" style="width:100px;white-space:nowrap;cursor:hand;">PIA</td><td id="CPH1_Mt0_td3" title="Presupuesto Institucional Modificado" onclick="__doPostBack(&#39;ctl00$CPH1$Mt0$td3&#39;,&#39;&#39;)" onmouseover="this.style.backgroundColor = &#39;#568AC1&#39;;" onmouseout="this.style.backgroundColor = &#39;&#39;;" style="width:100px;white-space:nowrap;cursor:hand;">PIM</td><td id="CPH1_Mt0_td4" title="Recaudado" onclick="__doPostBack(&#39;ctl00$CPH1$Mt0$td4&#39;,&#39;&#39;)" onmouseover="this.style.backgroundColor = &#39;#568AC1&#39;;" onmouseout="this.style.backgroundColor = &#39;&#39;;" style="width:100px;white-space:nowrap;cursor:hand;">Recaudado</td>
 		</tr>
 	</table>
                             <table class="Data" cellspacing="0" cellpadding="1">
                         
-                            <tr id="tr0" onclick='kCod="2";tr_clk(0, this)'
+                            <tr id="tr0" onclick='kCod="07";tr_clk(0, this)'
                                 onmouseover="tr_over(this)" onmouseout="tr_out(this)">
                                 
                                 <td align="left" style="width: auto">
-                                    2: RECURSOS DIRECTAMENTE RECAUDADOS
+                                    07: FONDO DE COMPENSACION MUNICIPAL
                                     
                                 </td>
                                 <td style="white-space: nowrap; width: 100px">
-                                    5,466,259
+                                    75,804,788
                                 </td>
                                 <td style="white-space: nowrap; width: 100px">
-                                    5,466,259
+                                    89,463,432
                                 </td>
                                 <td style="white-space: nowrap; width: 100px">
+                                    51,673,559
+                                </td>
+                            </tr>
+                        
+                            <tr class="alt" id="tr1" onclick='kCod="08";tr_clk(1, this)'
+                                onmouseover="tr_over(this)" onmouseout="tr_out(this)">
+                                
+                                <td align="left">
+                                    08: IMPUESTOS MUNICIPALES
+                                    
+                                </td>
+                                <td>
+                                    15,859,082
+                                </td>
+                                <td>
+                                    15,859,082
+                                </td>
+                                <td>
+                                    7,023,288
+                                </td>
+                            </tr>
+                        
+                            <tr class="alt" id="tr2" onclick='kCod="09";tr_clk(2, this)'
+                                onmouseover="tr_over(this)" onmouseout="tr_out(this)">
+                                
+                                <td align="left">
+                                    09: RECURSOS DIRECTAMENTE RECAUDADOS
+                                    
+                                </td>
+                                <td>
+                                    5,466,259
+                                </td>
+                                <td>
+                                    5,466,259
+                                </td>
+                                <td>
                                     4,638,634
                                 </td>
                             </tr>
                         
-                            <tr class="alt" id="tr1" onclick='kCod="3";tr_clk(1, this)'
+                            <tr class="alt" id="tr3" onclick='kCod="13";tr_clk(3, this)'
                                 onmouseover="tr_over(this)" onmouseout="tr_out(this)">
                                 
                                 <td align="left">
-                                    3: RECURSOS POR OPERACIONES OFICIALES DE CREDITO
-                                    
-                                </td>
-                                <td>
-                                    0
-                                </td>
-                                <td>
-                                    0
-                                </td>
-                                <td>
-                                    183,547
-                                </td>
-                            </tr>
-                        
-                            <tr class="alt" id="tr2" onclick='kCod="4";tr_clk(2, this)'
-                                onmouseover="tr_over(this)" onmouseout="tr_out(this)">
-                                
-                                <td align="left">
-                                    4: DONACIONES Y TRANSFERENCIAS
+                                    13: DONACIONES Y TRANSFERENCIAS
                                     
                                 </td>
                                 <td>
@@ -296,21 +314,39 @@ body
                                 </td>
                             </tr>
                         
-                            <tr class="alt" id="tr3" onclick='kCod="5";tr_clk(3, this)'
+                            <tr class="alt" id="tr4" onclick='kCod="18";tr_clk(4, this)'
                                 onmouseover="tr_over(this)" onmouseout="tr_out(this)">
                                 
                                 <td align="left">
-                                    5: RECURSOS DETERMINADOS
+                                    18: CANON Y SOBRECANON, REGALIAS, RENTA DE ADUANAS Y PARTICIPACIONES
                                     
                                 </td>
                                 <td>
-                                    95,908,757
+                                    4,244,887
                                 </td>
                                 <td>
-                                    112,484,263
+                                    7,161,749
                                 </td>
                                 <td>
-                                    68,106,171
+                                    9,409,324
+                                </td>
+                            </tr>
+                        
+                            <tr class="alt" id="tr5" onclick='kCod="19";tr_clk(5, this)'
+                                onmouseover="tr_over(this)" onmouseout="tr_out(this)">
+                                
+                                <td align="left">
+                                    19: RECURSOS POR OPERACIONES OFICIALES DE CREDITO
+                                    
+                                </td>
+                                <td>
+                                    0
+                                </td>
+                                <td>
+                                    0
+                                </td>
+                                <td>
+                                    183,547
                                 </td>
                             </tr>
                         
