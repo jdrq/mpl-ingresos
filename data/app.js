@@ -618,8 +618,6 @@ autoCargar();
 let B7_HIST = {};
 let b7ChartInstance = null;
 
-const B7_MESES = ["Ene","Feb","Mar","Abr","May","Jun","Jul"];
-
 fetch("data/historico_rubro08.json?" + Date.now())
   .then(r => r.json())
   .then(data => {
@@ -640,32 +638,27 @@ function getRubro08_2026() {
 function renderB7() {
   const rec2026 = getRubro08_2026();
 
-  const añosHist = Object.keys(B7_HIST).map(Number).sort();
-  const años     = [...añosHist, 2026];
-  const IDX_2026 = años.length - 1;
-
-  // Totales Ene-Jul por año (históricos desde JSON, 2026 del rubro.xls diario)
-  const totales = [...añosHist.map(a => B7_HIST[String(a)].total), rec2026];
-
-  // Datos mensuales por año (para la leyenda de barras agrupadas)
-  const mesesPorAnio = añosHist.map(a => B7_HIST[String(a)].meses);
+  const añosHist   = Object.keys(B7_HIST).map(Number).sort();
+  const años       = [...añosHist, 2026];
+  const valores    = [...añosHist.map(a => B7_HIST[String(a)].total), rec2026];
+  const IDX_2026_B7 = años.length - 1;
 
   const fmtM = n => {
     if (!n) return "S/ —";
     if (n >= 1e6) return "S/ " + (n / 1e6).toLocaleString("es-PE",
-                    { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " M";
+                    { minimumFractionDigits: 1, maximumFractionDigits: 1 }) + " M";
     if (n >= 1e3) return "S/ " + (n / 1e3).toLocaleString("es-PE",
                     { minimumFractionDigits: 0, maximumFractionDigits: 0 }) + " K";
     return "S/ " + Math.round(n).toLocaleString("es-PE");
   };
 
-  // ── KPI cards ────────────────────────────────────────────────
+  // KPI cards
   const kpiContainer = $("b7kpis");
   if (kpiContainer) {
     kpiContainer.innerHTML = años.map((a, i) => {
-      const v      = totales[i];
+      const v      = valores[i];
       const es2026 = a === 2026;
-      const prev   = i > 0 ? totales[i - 1] : null;
+      const prev   = i > 0 ? valores[i - 1] : null;
       let deltaHtml = "";
       if (prev && prev > 0 && v > 0) {
         const pct   = (v - prev) / prev * 100;
@@ -673,83 +666,47 @@ function renderB7() {
         const signo = pct >= 0 ? "▲" : "▼";
         deltaHtml = `<span style="font-size:10px;color:${color};font-weight:700">${signo} ${Math.abs(pct).toFixed(1)}%</span>`;
       }
-      return `<div style="background:${es2026 ? "#fef3c7" : "#f9fafb"};border:1px solid ${es2026 ? "#fbbf24" : "#e5e7eb"};
-               border-radius:10px;padding:10px 16px;min-width:110px;flex:1;text-align:center">
-        <div style="font-family:'Barlow Condensed';font-size:13px;font-weight:700;color:#6b7280;margin-bottom:3px">
-          Ene–Jul ${a}${es2026 ? " ★" : ""}
-        </div>
-        <div style="font-family:'Barlow Condensed';font-size:17px;font-weight:800;color:${es2026 ? "#92400e" : "#1f2937"}">
-          ${v ? fmtM(v) : "Cargando…"}
-        </div>
+      return `<div style="background:${es2026 ? "#fef3c7" : "#f9fafb"};border:1px solid ${es2026 ? "#fbbf24" : "#e5e7eb"};border-radius:10px;padding:10px 16px;min-width:110px;flex:1;text-align:center">
+        <div style="font-family:'Barlow Condensed';font-size:13px;font-weight:700;color:#6b7280;margin-bottom:3px">Ene\u2013Jul ${a}${es2026 ? " \u2605" : ""}</div>
+        <div style="font-family:'Barlow Condensed';font-size:18px;font-weight:800;color:${es2026 ? "#92400e" : "#1f2937"}">${v ? fmtM(v) : "Cargando\u2026"}</div>
         <div style="margin-top:3px">${deltaHtml}</div>
       </div>`;
     }).join("");
   }
 
-  // ── Gráfico de barras agrupadas por mes ───────────────────────
   const canvas = $("b7chart");
   if (!canvas) return;
   if (b7ChartInstance) { b7ChartInstance.destroy(); b7ChartInstance = null; }
 
-  // Colores por año: escala de rojos para históricos, dorado para 2026
-  const paleta = {
-    2022: { bg: "rgba(154,24,32,0.45)", border: "#9a1820" },
-    2023: { bg: "rgba(154,24,32,0.60)", border: "#9a1820" },
-    2024: { bg: "rgba(154,24,32,0.78)", border: "#7a1219" },
-    2025: { bg: "rgba(122,18,25,1.00)", border: "#5a0e12" },
-    2026: { bg: "#FFC526",              border: "#d9a000"  },
-  };
-
-  const datasets = años.map((a, i) => {
-    const es2026  = a === 2026;
-    const meses   = es2026 ? [] : B7_HIST[String(a)].meses; // 2026 = 1 barra total
-    const col     = paleta[a] || paleta[2025];
-    if (es2026) {
-      // 2026: una sola barra en el primer mes visible (Acumulado Ene-Jul)
-      return {
-        label: `${a} ★ (acum.)`,
-        data: [rec2026, null, null, null, null, null, null],
-        backgroundColor: col.bg,
-        borderColor: col.border,
-        borderWidth: 2,
-        borderRadius: 5,
-        borderSkipped: false,
-      };
-    }
-    return {
-      label: String(a),
-      data: meses,
-      backgroundColor: col.bg,
-      borderColor: col.border,
-      borderWidth: 1.5,
-      borderRadius: 4,
-      borderSkipped: false,
-    };
-  });
+  const colores       = años.map(a => a === 2026 ? "#FFC526" : "#9a1820");
+  const borderColores = años.map(a => a === 2026 ? "#d9a000" : "#7a1219");
 
   b7ChartInstance = new Chart(canvas, {
     type: "bar",
     data: {
-      labels: B7_MESES,
-      datasets
+      labels: años.map(a => `Ene\u2013Jul ${a}${a === 2026 ? " \u2605" : ""}`),
+      datasets: [{
+        label: "Recaudado Ene\u2013Jul Rubro 08",
+        data: valores,
+        backgroundColor: colores,
+        borderColor: borderColores,
+        borderWidth: 2,
+        borderRadius: 6,
+        borderSkipped: false,
+      }]
     },
     options: {
       responsive: true,
       maintainAspectRatio: false,
       plugins: {
-        legend: {
-          display: true,
-          position: "top",
-          labels: {
-            font: { family: "'Barlow Condensed'", size: 12, weight: "700" },
-            color: "#374151",
-            boxWidth: 14,
-            padding: 16,
-          }
-        },
+        legend: { display: false },
         tooltip: {
           callbacks: {
-            label: ctx => ` ${ctx.dataset.label}: S/ ${Math.round(ctx.raw || 0).toLocaleString("es-PE")}`
+            label: ctx => {
+              const v = ctx.raw;
+              if (!v) return " Sin datos";
+              return ` S/ ${Math.round(v).toLocaleString("es-PE")}`;
+            }
           }
         }
       },
@@ -758,11 +715,11 @@ function renderB7() {
           grid: { display: false },
           ticks: {
             font: { family: "'Barlow Condensed'", weight: "700", size: 12 },
-            color: "#374151"
+            color: ctx => ctx.index === IDX_2026_B7 ? "#92400e" : "#374151"
           }
         },
         y: {
-          beginAtZero: true,
+          beginAtZero: false,
           ticks: {
             callback: v => {
               if (v >= 1e6) return "S/ " + (v / 1e6).toFixed(1) + " M";
@@ -776,6 +733,25 @@ function renderB7() {
         }
       },
       animation: { duration: 600 }
-    }
+    },
+    plugins: [{
+      id: "b7Labels",
+      afterDatasetsDraw(chart) {
+        const { ctx, data } = chart;
+        ctx.save();
+        data.datasets[0].data.forEach((value, i) => {
+          if (!value) return;
+          const meta = chart.getDatasetMeta(0);
+          const bar  = meta.data[i];
+          const txt  = fmtM(value);
+          ctx.fillStyle    = i === IDX_2026_B7 ? "#92400e" : "#7a1219";
+          ctx.font         = "700 12px 'Barlow Condensed'";
+          ctx.textAlign    = "center";
+          ctx.textBaseline = "bottom";
+          ctx.fillText(txt, bar.x, bar.y - 8);
+        });
+        ctx.restore();
+      }
+    }]
   });
 }
