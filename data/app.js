@@ -195,6 +195,7 @@ function render() {
   renderB4();
   renderB5();
   renderB6();
+  renderB7();
 }
 
 function renderB1() {
@@ -609,3 +610,172 @@ $("fechaHeader").textContent = fechaCorta();
   const el = $(id); if (el) el.textContent = fechaHoy();
 });
 autoCargar();
+
+// ═══════════════════════════════════════════════════════════════
+//  BLOQUE 7 — COMPARATIVO HISTÓRICO RUBRO 08: IMPUESTOS MUNICIPALES
+// ═══════════════════════════════════════════════════════════════
+
+let B7_HIST = {};
+let b7ChartInstance = null;
+
+const B7_MESES = ["Ene","Feb","Mar","Abr","May","Jun","Jul"];
+
+fetch("data/historico_rubro08.json?" + Date.now())
+  .then(r => r.json())
+  .then(data => {
+    B7_HIST = data;
+    renderB7();
+  })
+  .catch(() => console.warn("[MPL] No se pudo cargar historico_rubro08.json"));
+
+function getRubro08_2026() {
+  if (!datos.rubro || !datos.rubro.registros) return 0;
+  const r08 = datos.rubro.registros.find(r => {
+    const cod = (r.descripcion.match(/^(\d+)/) || ["",""])[1];
+    return cod === "08";
+  });
+  return r08 ? (r08.rec || 0) : 0;
+}
+
+function renderB7() {
+  const rec2026 = getRubro08_2026();
+
+  const añosHist = Object.keys(B7_HIST).map(Number).sort();
+  const años     = [...añosHist, 2026];
+  const IDX_2026 = años.length - 1;
+
+  // Totales Ene-Jul por año (históricos desde JSON, 2026 del rubro.xls diario)
+  const totales = [...añosHist.map(a => B7_HIST[String(a)].total), rec2026];
+
+  // Datos mensuales por año (para la leyenda de barras agrupadas)
+  const mesesPorAnio = añosHist.map(a => B7_HIST[String(a)].meses);
+
+  const fmtM = n => {
+    if (!n) return "S/ —";
+    if (n >= 1e6) return "S/ " + (n / 1e6).toLocaleString("es-PE",
+                    { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " M";
+    if (n >= 1e3) return "S/ " + (n / 1e3).toLocaleString("es-PE",
+                    { minimumFractionDigits: 0, maximumFractionDigits: 0 }) + " K";
+    return "S/ " + Math.round(n).toLocaleString("es-PE");
+  };
+
+  // ── KPI cards ────────────────────────────────────────────────
+  const kpiContainer = $("b7kpis");
+  if (kpiContainer) {
+    kpiContainer.innerHTML = años.map((a, i) => {
+      const v      = totales[i];
+      const es2026 = a === 2026;
+      const prev   = i > 0 ? totales[i - 1] : null;
+      let deltaHtml = "";
+      if (prev && prev > 0 && v > 0) {
+        const pct   = (v - prev) / prev * 100;
+        const color = pct >= 0 ? "#2a7d46" : "#c0392b";
+        const signo = pct >= 0 ? "▲" : "▼";
+        deltaHtml = `<span style="font-size:10px;color:${color};font-weight:700">${signo} ${Math.abs(pct).toFixed(1)}%</span>`;
+      }
+      return `<div style="background:${es2026 ? "#fef3c7" : "#f9fafb"};border:1px solid ${es2026 ? "#fbbf24" : "#e5e7eb"};
+               border-radius:10px;padding:10px 16px;min-width:110px;flex:1;text-align:center">
+        <div style="font-family:'Barlow Condensed';font-size:13px;font-weight:700;color:#6b7280;margin-bottom:3px">
+          Ene–Jul ${a}${es2026 ? " ★" : ""}
+        </div>
+        <div style="font-family:'Barlow Condensed';font-size:17px;font-weight:800;color:${es2026 ? "#92400e" : "#1f2937"}">
+          ${v ? fmtM(v) : "Cargando…"}
+        </div>
+        <div style="margin-top:3px">${deltaHtml}</div>
+      </div>`;
+    }).join("");
+  }
+
+  // ── Gráfico de barras agrupadas por mes ───────────────────────
+  const canvas = $("b7chart");
+  if (!canvas) return;
+  if (b7ChartInstance) { b7ChartInstance.destroy(); b7ChartInstance = null; }
+
+  // Colores por año: escala de rojos para históricos, dorado para 2026
+  const paleta = {
+    2022: { bg: "rgba(154,24,32,0.45)", border: "#9a1820" },
+    2023: { bg: "rgba(154,24,32,0.60)", border: "#9a1820" },
+    2024: { bg: "rgba(154,24,32,0.78)", border: "#7a1219" },
+    2025: { bg: "rgba(122,18,25,1.00)", border: "#5a0e12" },
+    2026: { bg: "#FFC526",              border: "#d9a000"  },
+  };
+
+  const datasets = años.map((a, i) => {
+    const es2026  = a === 2026;
+    const meses   = es2026 ? [] : B7_HIST[String(a)].meses; // 2026 = 1 barra total
+    const col     = paleta[a] || paleta[2025];
+    if (es2026) {
+      // 2026: una sola barra en el primer mes visible (Acumulado Ene-Jul)
+      return {
+        label: `${a} ★ (acum.)`,
+        data: [rec2026, null, null, null, null, null, null],
+        backgroundColor: col.bg,
+        borderColor: col.border,
+        borderWidth: 2,
+        borderRadius: 5,
+        borderSkipped: false,
+      };
+    }
+    return {
+      label: String(a),
+      data: meses,
+      backgroundColor: col.bg,
+      borderColor: col.border,
+      borderWidth: 1.5,
+      borderRadius: 4,
+      borderSkipped: false,
+    };
+  });
+
+  b7ChartInstance = new Chart(canvas, {
+    type: "bar",
+    data: {
+      labels: B7_MESES,
+      datasets
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          display: true,
+          position: "top",
+          labels: {
+            font: { family: "'Barlow Condensed'", size: 12, weight: "700" },
+            color: "#374151",
+            boxWidth: 14,
+            padding: 16,
+          }
+        },
+        tooltip: {
+          callbacks: {
+            label: ctx => ` ${ctx.dataset.label}: S/ ${Math.round(ctx.raw || 0).toLocaleString("es-PE")}`
+          }
+        }
+      },
+      scales: {
+        x: {
+          grid: { display: false },
+          ticks: {
+            font: { family: "'Barlow Condensed'", weight: "700", size: 12 },
+            color: "#374151"
+          }
+        },
+        y: {
+          beginAtZero: true,
+          ticks: {
+            callback: v => {
+              if (v >= 1e6) return "S/ " + (v / 1e6).toFixed(1) + " M";
+              if (v >= 1e3) return "S/ " + (v / 1e3).toFixed(0) + " K";
+              return "S/ " + v;
+            },
+            font: { family: "'Barlow'", size: 11 },
+            color: "#6b7280"
+          },
+          grid: { color: "#f3f4f6" }
+        }
+      },
+      animation: { duration: 600 }
+    }
+  });
+}
