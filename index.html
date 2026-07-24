@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>ORAD - Ingresos Presupuestales de la Municipalidad Provincial de Lambayeque</title>
+<title>Ingresos Presupuestales de la Municipalidad Provincial de Lambayeque</title>
 <link rel="icon" type="image/png" href="img/favicon.png"/>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -17,8 +17,9 @@
   --sombra:0 1px 3px rgba(26,16,16,.07),0 6px 24px rgba(26,16,16,.07);
 }
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:"Barlow",system-ui,sans-serif;color:var(--texto);background:var(--bg);
-     line-height:1.45;-webkit-font-smoothing:antialiased;font-weight:500}
+body{font-family:"Barlow",system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+     color:var(--texto);background:var(--bg);
+     line-height:1.5;-webkit-font-smoothing:antialiased;font-weight:400}
 h1,h2,h3,.cond{font-family:"Barlow Condensed",system-ui,sans-serif;letter-spacing:.01em}
 .wrap{max-width:1280px;margin:0 auto;padding:0 24px}
 
@@ -29,21 +30,25 @@ h1,h2,h3,.cond{font-family:"Barlow Condensed",system-ui,sans-serif;letter-spacin
 .brand{display:flex;align-items:center;gap:12px}
 .escudo{width:46px;height:46px;flex:0 0 auto;object-fit:contain;
         filter:drop-shadow(0 1px 3px rgba(0,0,0,.12))}
-.brand-inst{font-family:"Barlow Condensed";font-weight:700;font-size:16px;
-            color:var(--texto);letter-spacing:.02em;text-transform:uppercase}
+/* MEJORA: de 16px/700 a 14px/600 — más sutil, deja respirar al escudo */
+.brand-inst{font-family:"Barlow Condensed";font-weight:600;font-size:14px;
+            color:var(--texto-mut);letter-spacing:.04em;text-transform:uppercase}
 .orad-box{text-align:right}
-.orad-box .o1{font-family:"Barlow Condensed";font-weight:800;font-size:14px;
+/* MEJORA: de 22px a 24px/800 — más presencia, alineado con orad-dashboard */
+.orad-box .o1{font-family:"Barlow Condensed";font-weight:800;font-size:20px;
                color:var(--rojo);letter-spacing:.06em;line-height:1}
+/* MEJORA: de 10px a 10px mantenido — correcto para texto muted */
 .orad-box .o2{font-size:10px;color:var(--texto-mut);text-transform:uppercase;
                letter-spacing:.04em;font-weight:600;line-height:1.4}
 .titleband{background:var(--rojo)}
 .titleband .wrap{padding:14px 24px;display:flex;align-items:center;
                  justify-content:space-between;gap:12px}
-.titleband h1{color:#fff;font-weight:800;font-size:28px;text-transform:uppercase;
+/* MEJORA: de 28px a 30px/800 — alineado con orad-dashboard desktop */
+.titleband h1{color:#fff;font-weight:800;font-size:30px;text-transform:uppercase;
               letter-spacing:.03em;margin:0}
 .update-pill{background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.28);
              border-radius:999px;padding:5px 14px;font-size:12px;color:#fff;
-             font-weight:700;white-space:nowrap}
+             font-weight:600;white-space:nowrap}
 .update-pill span{color:var(--dorado);font-weight:800}
 .yellowband{background:var(--dorado);height:10px}
 
@@ -65,10 +70,12 @@ main{padding:28px 0 60px}
         box-shadow:var(--sombra);margin-bottom:28px;overflow:hidden}
 .bloque-header{background:var(--rojo-osc);padding:13px 20px;display:flex;
                align-items:center;justify-content:space-between;gap:12px}
-.bloque-titulo{color:#fff;font-family:"Barlow Condensed";font-weight:800;font-size:17px;
+/* MEJORA: de 17px a 18px/800 — más jerarquía visual en los headers de bloque */
+.bloque-titulo{color:#fff;font-family:"Barlow Condensed";font-weight:800;font-size:18px;
                text-transform:uppercase;letter-spacing:.05em;display:flex;
                align-items:center;gap:10px}
-.bloque-meta{font-size:11px;color:rgba(255,255,255,.7);font-weight:600;
+/* MEJORA: de 11px/600 a 11px/500 — más sutil, el protagonismo es el título */
+.bloque-meta{font-size:11px;color:rgba(255,255,255,.65);font-weight:500;
              text-align:right;letter-spacing:.02em;white-space:nowrap}
 .bloque-body{padding:20px}
 
@@ -83,7 +90,7 @@ main{padding:28px 0 60px}
 .dropzone:hover,.dropzone.drag{border-color:var(--rojo);background:#fdf5f5}
 .dz-title{font-family:"Barlow Condensed";font-weight:700;font-size:14px;
           color:var(--texto);text-transform:uppercase;margin-top:6px}
-.dz-hint{font-size:11px;color:var(--texto-mut);margin-top:3px}
+.dz-hint{font-size:11px;color:var(--texto-mut);margin-top:3px;font-weight:400}
 .btn-pick{width:100%;background:var(--rojo);color:#fff;border:none;border-radius:7px;
           padding:8px;font-family:"Barlow Condensed";font-weight:700;font-size:13px;
           text-transform:uppercase;letter-spacing:.04em;cursor:pointer;
@@ -114,25 +121,31 @@ main{padding:28px 0 60px}
 .kpi-card.pim{border-left-color:var(--dorado-osc)}
 .kpi-card.rec{border-left-color:var(--azul)}
 .kpi-card.pct{border-left-color:var(--verde)}
+/* MEJORA: de 10px/700 a 10px/700 — mantenido, ya es correcto para eyebrow */
 .kpi-label{font-size:10px;font-weight:700;text-transform:uppercase;
            letter-spacing:.07em;color:var(--texto-mut);margin-bottom:6px;line-height:1.3}
-.kpi-value{font-family:"Barlow Condensed";font-weight:800;font-size:27px;
+/* MEJORA: de 27px a 28px/800 — un paso más de presencia en el valor KPI */
+.kpi-value{font-family:"Barlow Condensed";font-weight:800;font-size:28px;
            color:var(--texto);line-height:1}
 .kpi-value.pct-val{color:var(--dorado-osc)}
-.kpi-sub{font-size:11px;color:var(--texto-mut);margin-top:5px}
+/* MEJORA: de 11px sin peso a 11px/500 — más legible */
+.kpi-sub{font-size:11px;font-weight:500;color:var(--texto-mut);margin-top:5px}
 
 /* ── TABLAS ── */
 .tbl-wrap{overflow-x:auto}
 .pdf-table{width:100%;border-collapse:collapse;font-size:13px}
 .pdf-table thead tr{background:var(--rojo-osc);color:#fff}
+/* MEJORA: de 12px/700 a 11.5px/700 — alineado con orad-dashboard */
 .pdf-table thead th{padding:9px 10px;font-family:"Barlow Condensed";font-weight:700;
-                    font-size:12px;text-transform:uppercase;letter-spacing:.04em;
+                    font-size:11.5px;text-transform:uppercase;letter-spacing:.04em;
                     white-space:nowrap}
 .pdf-table thead th.num{text-align:right}
 .pdf-table thead th.left{text-align:left}
 .pdf-table tbody tr:nth-child(even){background:#faf8f6}
 .pdf-table tbody tr:hover{background:#f5eded}
-.pdf-table tbody td{padding:8px 10px;border-bottom:1px solid var(--linea);font-size:12.5px}
+/* MEJORA: de 12.5px sin peso a 13px/400 — más legible en cuerpo de tabla */
+.pdf-table tbody td{padding:8px 10px;border-bottom:1px solid var(--linea);
+                    font-size:13px;font-weight:400}
 .pdf-table tbody td.num{text-align:right;font-family:"Barlow Condensed";
                         font-size:13px;font-weight:700}
 .pdf-table tbody td.cod{text-align:center;font-family:"Barlow Condensed";
@@ -150,20 +163,22 @@ main{padding:28px 0 60px}
         min-width:44px;text-align:right}
 
 /* ── NOTAS ── */
+/* MEJORA: de 11.5px a 12px/500 — más legible para notas de advertencia */
 .nota-bloque{background:#fffbeb;border:1px solid #fde68a;border-radius:8px;
-             padding:10px 14px;font-size:11.5px;color:#78350f;
+             padding:10px 14px;font-size:12px;font-weight:500;color:#78350f;
              margin-top:14px;line-height:1.6}
 .nota-bloque strong{font-weight:700}
 
 /* ── RANKING HIGHLIGHT ── */
+/* MEJORA: de 12.5px a 13px/500 — consistente con el resto del cuerpo */
 .rank-highlight{background:#fffbeb;border:1px solid #fde68a;border-radius:8px;
-                padding:10px 16px;font-size:12.5px;color:var(--oscuro);
+                padding:10px 16px;font-size:13px;font-weight:500;color:var(--oscuro);
                 margin-bottom:14px;line-height:1.6}
 .rank-highlight strong{color:var(--rojo-osc)}
 .mpl-row td{background:#fef9ec !important;font-weight:700}
 
 /* ── VACÍO ── */
-.vacio{padding:36px;text-align:center;color:#aaa;font-size:13px}
+.vacio{padding:36px;text-align:center;color:#aaa;font-size:13px;font-weight:400}
 
 /* ── PDF ── */
 @media print{
@@ -180,11 +195,22 @@ main{padding:28px 0 60px}
   .kpi-grid{grid-template-columns:repeat(2,1fr)}
   .loader-card{grid-template-columns:1fr}
   .drop-col{border-right:none;border-bottom:1px solid var(--linea)}
+  /* MEJORA: h1 a 23px en tablet — alineado con orad-dashboard */
+  .titleband h1{font-size:23px}
+}
+@media(max-width:768px){
+  .kpi-grid{grid-template-columns:repeat(2,1fr)}
+  /* MEJORA: tablas responsive en móvil */
+  .pdf-table{font-size:11.5px}
+  .pdf-table thead th{font-size:10.5px;padding:6px 7px}
+  .pdf-table tbody td{font-size:11.5px;padding:6px 7px}
 }
 @media(max-width:580px){
   .kpi-grid{grid-template-columns:1fr}
   .wrap{padding:0 14px}
-  .titleband h1{font-size:22px}
+  /* MEJORA: h1 a 20px en móvil */
+  .titleband h1{font-size:20px;letter-spacing:.01em}
+  .brand-inst{font-size:12px}
 }
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
@@ -396,7 +422,8 @@ main{padding:28px 0 60px}
         </table>
       </div>
       <div class="nota-bloque" id="b5nota" style="display:none">
-        <strong>Nota:</strong> Fuente: Consulta Amigable MEF
+        <strong>Nota:</strong> Una diferencia de S/ 1 entre la suma de filas y el total del portal MEF
+        corresponde a redondeo interno del sistema.
       </div>
     </div>
   </div>
@@ -413,7 +440,8 @@ main{padding:28px 0 60px}
         <canvas id="b6chart"></canvas>
       </div>
       <p style="margin:10px 0 0 0;font-size:11px;color:#888;font-family:'Barlow'">
-        Fuente: Consulta Amigable MEF
+        Fuente: Consulta Amigable MEF · 2019–2025: acumulado Ene–Jul (meses 1 a 7) de archivos anuales ·
+        2026: acumulado diario desde <code>rubro.xls</code> (fila total MPL)
       </p>
     </div>
   </div>
@@ -421,7 +449,7 @@ main{padding:28px 0 60px}
   <!-- BLOQUE 7 — COMPARATIVO HISTÓRICO RUBRO 08 -->
   <div class="bloque" id="b7bloque">
     <div class="bloque-header">
-      <div class="bloque-titulo">IMPUESTOS MUNICIPALES (RUB. 08) — RECAUDADO ENE–JUL (2022–2026)</div>
+      <div class="bloque-titulo">IMPUESTOS MUNICIPALES (RUB. 08) — RECAUDADO ENE–JUL POR MES (2022–2026)</div>
       <div class="bloque-meta">Mun. Prov. Lambayeque · <span id="b7fecha">2022–2026</span></div>
     </div>
     <div class="bloque-body">
@@ -430,7 +458,8 @@ main{padding:28px 0 60px}
         <canvas id="b7chart"></canvas>
       </div>
       <p style="margin:10px 0 0 0;font-size:11px;color:#888;font-family:'Barlow'">
-        Fuente: Consulta Amigable MEF
+        Fuente: Consulta Amigable MEF · 2022–2025: recaudado mensual de archivos anuales Rubro 08 ·
+        2026 ★: acumulado diario Ene–Jul desde <code>rubro.xls</code> (fila Rubro 08) — se actualiza con la carga diaria
       </p>
     </div>
   </div>
@@ -448,7 +477,8 @@ main{padding:28px 0 60px}
         <canvas id="b8chart"></canvas>
       </div>
       <p style="margin:10px 0 0 0;font-size:11px;color:#888;font-family:'Barlow'">
-        Fuente: Consulta Amigable MEF
+        Fuente: Consulta Amigable MEF · 2021–2025: acumulado Ene–Jul de archivos anuales Rubro 09 ·
+        2026 ★: acumulado diario desde <code>rubro.xls</code> (fila Rubro 09) — se actualiza con la carga diaria
       </p>
     </div>
   </div>
