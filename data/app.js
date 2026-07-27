@@ -224,14 +224,30 @@ function renderB1() {
     : "PIM = 0";
 }
 
+// Instancias de donas B2
+let b2DonaInstancias = [];
+
 function renderB2() {
   const d     = datos.fuente;
   const tbody = $("b2tbody"), tfoot = $("b2tfoot"), nota = $("b2nota");
+
   if (!d || !d.registros.length) {
     tbody.innerHTML = '<tr><td colspan="6" class="vacio">Carga fuente.xls para ver los datos.</td></tr>';
+    const w = $("b2donawrap"); if (w) w.style.display = "none";
     return;
   }
 
+  // Paleta B2 — fuentes de financiamiento
+  const PALETA_B2 = [
+    { bg: "#0067a6", light: "#e0f0f9" },  // azul — RDR (2)
+    { bg: "#7c3aed", light: "#ede9fe" },  // violeta — Operaciones Crédito (3)
+    { bg: "#059669", light: "#d1fae5" },  // verde — Donaciones (4)
+    { bg: "#9a1820", light: "#fce8e9" },  // rojo institucional — Recursos Determinados (5)
+    { bg: "#d9a000", light: "#fef3c7" },  // dorado — TOTAL
+  ];
+  renderDonas(d.registros, d.totalPIM, d.totalRec, "b2dona", b2DonaInstancias, PALETA_B2);
+
+  // ── Tabla ──────────────────────────────────────────────────────
   const notas = [];
   tbody.innerHTML = d.registros.map(r => {
     const pend  = r.pim - r.rec;
@@ -266,14 +282,110 @@ function renderB2() {
   else nota.style.display = "none";
 }
 
+// Instancias de donas B3 y B4
+let b3DonaInstancias = [];
+let b4DonaInstancias = [];
+
+// Helper genérico: crea el HTML + Chart.js para un conjunto de donas
+// prefix: "b3dona" | "b4dona"
+// instArr: array donde se guardan las instancias para destruirlas luego
+// PALETA_FN: función(index) → {bg, light}
+function renderDonas(registros, totalPIM, totalRec, prefix, instArr, paleta) {
+  const contenedor = $(prefix + "wrap");
+  if (!contenedor) return;
+
+  instArr.forEach(c => c.destroy());
+  instArr.length = 0;
+
+  const items = registros.map((r, i) => {
+    const cod    = (r.descripcion.match(/^(\d+)/) || ["",""])[1];
+    const nombre = r.descripcion.replace(/^\d+:\s*/, "").trim();
+    const nombreCorto = nombre.length > 22 ? nombre.substring(0, 20).trimEnd() + "…" : nombre;
+    const pct    = r.pim > 0 ? Math.min(r.rec / r.pim * 100, 100) : null;
+    return { cod, nombreCorto, pct, rec: r.rec, pim: r.pim,
+             color: paleta[i % (paleta.length - 1)] };
+  });
+
+  const pctTotal = totalPIM > 0 ? Math.min(totalRec / totalPIM * 100, 100) : null;
+  items.push({ cod: "∑", nombreCorto: "TOTAL", pct: pctTotal,
+               rec: totalRec, pim: totalPIM,
+               color: paleta[paleta.length - 1], esTotal: true });
+
+  contenedor.style.display = "flex";
+  contenedor.innerHTML = items.map((it, idx) =>
+    `<div style="flex:1;min-width:120px;max-width:170px;text-align:center">
+      <div style="font-family:'Barlow Condensed';font-size:11px;font-weight:700;
+                  color:#6b7280;text-transform:uppercase;letter-spacing:.04em;
+                  margin-bottom:6px;min-height:28px;display:flex;align-items:center;
+                  justify-content:center;line-height:1.3">${it.nombreCorto}</div>
+      <div style="position:relative;width:110px;height:110px;margin:0 auto">
+        <canvas id="${prefix}${idx}" width="110" height="110"></canvas>
+        <div style="position:absolute;inset:0;display:flex;flex-direction:column;
+                    align-items:center;justify-content:center;pointer-events:none">
+          <span style="font-family:'Barlow Condensed';font-weight:800;
+                       font-size:${it.esTotal ? "20px" : "18px"};
+                       color:${it.pct !== null ? it.color.bg : "#888"};line-height:1">
+            ${it.pct !== null ? it.pct.toFixed(1) + "%" : "N/A"}
+          </span>
+          <span style="font-size:9px;font-weight:600;color:#9ca3af;letter-spacing:.03em;
+                       text-transform:uppercase;margin-top:2px">REC.</span>
+        </div>
+      </div>
+      <div style="margin-top:7px;font-family:'Barlow Condensed';font-size:11px;
+                  color:#6b7280;font-weight:600">
+        PIM: ${it.pim >= 1e6
+          ? "S/ " + (it.pim / 1e6).toLocaleString("es-PE",{minimumFractionDigits:1,maximumFractionDigits:1}) + " M"
+          : "S/ " + Math.round(it.pim).toLocaleString("es-PE")}
+      </div>
+    </div>`
+  ).join("");
+
+  items.forEach((it, idx) => {
+    const canvas = $(prefix + idx);
+    if (!canvas) return;
+    const pctVal = it.pct !== null ? it.pct : 0;
+    const inst = new Chart(canvas, {
+      type: "doughnut",
+      data: { datasets: [{
+        data: [pctVal, Math.max(0, 100 - pctVal)],
+        backgroundColor: [it.color.bg, it.color.light],
+        borderWidth: 0,
+        borderRadius: pctVal > 0 && pctVal < 100 ? 4 : 0,
+      }]},
+      options: {
+        responsive: false, cutout: "72%",
+        plugins: { legend: { display: false }, tooltip: { enabled: false } },
+        animation: { duration: 500 }, events: [],
+      }
+    });
+    instArr.push(inst);
+  });
+}
+
 function renderB3() {
   const d     = datos.rubro;
   const tbody = $("b3tbody"), tfoot = $("b3tfoot"), nota = $("b3nota");
+  const wrap  = $("b3donawrap");
+
   if (!d || !d.registros.length) {
     tbody.innerHTML = '<tr><td colspan="7" class="vacio">Carga rubro.xls para ver los datos.</td></tr>';
+    if (wrap) wrap.style.display = "none";
     return;
   }
 
+  // Paleta B3 — tonos verdes/azules/cálidos por rubro
+  const PALETA_B3 = [
+    { bg: "#0067a6", light: "#e0f0f9" },  // azul — FONCOMUN (07)
+    { bg: "#9a1820", light: "#fce8e9" },  // rojo institucional — Impuestos (08)
+    { bg: "#059669", light: "#d1fae5" },  // verde — RDR (09)
+    { bg: "#7c3aed", light: "#ede9fe" },  // violeta — Donaciones (13)
+    { bg: "#b45309", light: "#fef3c7" },  // ámbar — Canon (18)
+    { bg: "#6b7280", light: "#f3f4f6" },  // gris — Operaciones crédito (19)
+    { bg: "#d9a000", light: "#fef3c7" },  // dorado — TOTAL
+  ];
+  renderDonas(d.registros, d.totalPIM, d.totalRec, "b3dona", b3DonaInstancias, PALETA_B3);
+
+  // ── Tabla ──────────────────────────────────────────────────────
   const notas = [];
   tbody.innerHTML = d.registros.map(r => {
     const pend   = r.pim - r.rec;
@@ -314,11 +426,26 @@ function renderB3() {
 function renderB4() {
   const d     = datos.generica;
   const tbody = $("b4tbody"), tfoot = $("b4tfoot"), nota = $("b4nota");
+  const wrap  = $("b4donawrap");
+
   if (!d || !d.registros.length) {
     tbody.innerHTML = '<tr><td colspan="7" class="vacio">Carga generica.xls para ver los datos.</td></tr>';
+    if (wrap) wrap.style.display = "none";
     return;
   }
 
+  // Paleta B4 — genéricas (1, 3, 4, 5, 9)
+  const PALETA_B4 = [
+    { bg: "#9a1820", light: "#fce8e9" },  // rojo — Impuestos y contribuciones (1)
+    { bg: "#0067a6", light: "#e0f0f9" },  // azul — Venta bienes/servicios (3)
+    { bg: "#059669", light: "#d1fae5" },  // verde — Donaciones (4)
+    { bg: "#b45309", light: "#fef3c7" },  // ámbar — Otros ingresos (5)
+    { bg: "#7c3aed", light: "#ede9fe" },  // violeta — Saldos de balance (9)
+    { bg: "#d9a000", light: "#fef3c7" },  // dorado — TOTAL
+  ];
+  renderDonas(d.registros, d.totalPIM, d.totalRec, "b4dona", b4DonaInstancias, PALETA_B4);
+
+  // ── Tabla ──────────────────────────────────────────────────────
   const notas = [];
   tbody.innerHTML = d.registros.map(r => {
     const pend   = r.pim - r.rec;
