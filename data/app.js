@@ -252,34 +252,35 @@ function renderB2() {
   tbody.innerHTML = d.registros.map(r => {
     const pend  = r.pim - r.rec;
     const pct   = r.pim > 0 ? r.rec / r.pim * 100 : (r.rec > 0 ? null : 0);
-    const nombre = r.descripcion.replace(/^\d+:\s*/, "");
-    const cod    = (r.descripcion.match(/^(\d+)/) || ["",""])[1];
-    if (r.pim === 0 && r.rec > 0) {
-      notas.push(`<strong>${cod}: ${nombre.substring(0,50)}</strong> — PIA y PIM = S/ 0 con Recaudado = S/ ${fmt(r.rec)}. Corresponde a rendimientos sin presupuesto asignado. Se muestra como "N/A".`);
-    }
+    const nombre  = r.descripcion.replace(/^\d+:\s*/, "");
+    const cod     = (r.descripcion.match(/^(\d+)/) || ["",""])[1];
+    // Pendiente: nunca negativo — si rec >= pim mostrar S/ 0
+    const pendMostrar = Math.max(0, pend);
+    // % recaudación: 100% si PIM=0 y rec>0; normal si PIM>0; 0 si ambos 0
+    const pctTabla = r.pim === 0 ? (r.rec > 0 ? 100 : 0) : Math.min(r.rec / r.pim * 100, 100);
     return `<tr>
       <td style="font-weight:600">${cod}: ${nombre}</td>
       <td class="num">${fmtS(r.pia)}</td>
       <td class="num">${fmtS(r.pim)}</td>
       <td class="num">${fmtS(r.rec)}</td>
-      <td class="num" style="color:${pend < 0 ? "var(--rojo-s)" : "inherit"}">${fmtS(pend)}</td>
-      <td>${barraHTML(pct)}</td>
+      <td class="num">${fmtS(pendMostrar)}</td>
+      <td>${barraHTML(pctTabla)}</td>
     </tr>`;
   }).join("");
 
   const tp = d.totalPIM, tr_ = d.totalRec, tpia = d.totalPIA;
-  const tpct = tp > 0 ? tr_ / tp * 100 : null;
+  const tpct = tp > 0 ? Math.min(tr_ / tp * 100, 100) : (tr_ > 0 ? 100 : 0);
+  const tpend = Math.max(0, tp - tr_);
   tfoot.innerHTML = `<tr>
     <td style="font-family:'Barlow Condensed';font-weight:800;text-transform:uppercase">TOTAL</td>
     <td class="num">${fmtS(tpia)}</td>
     <td class="num">${fmtS(tp)}</td>
     <td class="num">${fmtS(tr_)}</td>
-    <td class="num">${fmtS(tp - tr_)}</td>
+    <td class="num">${fmtS(tpend)}</td>
     <td>${barraHTML(tpct)}</td>
   </tr>`;
 
-  if (notas.length) { nota.style.display = ""; nota.innerHTML = "⚠️ " + notas.join("<br/>⚠️ "); }
-  else nota.style.display = "none";
+  nota.style.display = "none";
 }
 
 // Instancias de donas B3 y B4
@@ -297,23 +298,33 @@ function renderDonas(registros, totalPIM, totalRec, prefix, instArr, paleta) {
   instArr.forEach(c => c.destroy());
   instArr.length = 0;
 
+  // pct: si PIM=0 y rec>0 → 100%; si PIM>0 → min(rec/pim,100); si ambos 0 → 0
+  function calcPct(pim, rec) {
+    if (pim === 0) return rec > 0 ? 100 : 0;
+    return Math.min(rec / pim * 100, 100);
+  }
+
   const items = registros.map((r, i) => {
-    const cod    = (r.descripcion.match(/^(\d+)/) || ["",""])[1];
-    const nombre = r.descripcion.replace(/^\d+:\s*/, "").trim();
+    const cod         = (r.descripcion.match(/^(\d+)/) || ["",""])[1];
+    const nombre      = r.descripcion.replace(/^\d+:\s*/, "").trim();
     const nombreCorto = nombre.length > 22 ? nombre.substring(0, 20).trimEnd() + "…" : nombre;
-    const pct    = r.pim > 0 ? Math.min(r.rec / r.pim * 100, 100) : null;
+    const pct         = calcPct(r.pim, r.rec);
     return { cod, nombreCorto, pct, rec: r.rec, pim: r.pim,
              color: paleta[i % (paleta.length - 1)] };
   });
 
-  const pctTotal = totalPIM > 0 ? Math.min(totalRec / totalPIM * 100, 100) : null;
+  const pctTotal = calcPct(totalPIM, totalRec);
   items.push({ cod: "∑", nombreCorto: "TOTAL", pct: pctTotal,
                rec: totalRec, pim: totalPIM,
                color: paleta[paleta.length - 1], esTotal: true });
 
+  // Layout: items normales flex-start, TOTAL empujado a la derecha con margin-left:auto
   contenedor.style.display = "flex";
-  contenedor.innerHTML = items.map((it, idx) =>
-    `<div style="flex:1;min-width:120px;max-width:170px;text-align:center">
+  contenedor.style.justifyContent = "flex-start";
+  contenedor.innerHTML = items.map((it, idx) => {
+    const esTotal = !!it.esTotal;
+    const marginLeft = esTotal ? "auto" : "0";
+    return `<div style="min-width:120px;max-width:160px;text-align:center;margin-left:${marginLeft}">
       <div style="font-family:'Barlow Condensed';font-size:11px;font-weight:700;
                   color:#6b7280;text-transform:uppercase;letter-spacing:.04em;
                   margin-bottom:6px;min-height:28px;display:flex;align-items:center;
@@ -323,9 +334,9 @@ function renderDonas(registros, totalPIM, totalRec, prefix, instArr, paleta) {
         <div style="position:absolute;inset:0;display:flex;flex-direction:column;
                     align-items:center;justify-content:center;pointer-events:none">
           <span style="font-family:'Barlow Condensed';font-weight:800;
-                       font-size:${it.esTotal ? "20px" : "18px"};
-                       color:${it.pct !== null ? it.color.bg : "#888"};line-height:1">
-            ${it.pct !== null ? it.pct.toFixed(1) + "%" : "N/A"}
+                       font-size:${esTotal ? "20px" : "18px"};
+                       color:${it.color.bg};line-height:1">
+            ${it.pct.toFixed(1)}%
           </span>
           <span style="font-size:9px;font-weight:600;color:#9ca3af;letter-spacing:.03em;
                        text-transform:uppercase;margin-top:2px">REC.</span>
@@ -337,13 +348,13 @@ function renderDonas(registros, totalPIM, totalRec, prefix, instArr, paleta) {
           ? "S/ " + (it.pim / 1e6).toLocaleString("es-PE",{minimumFractionDigits:1,maximumFractionDigits:1}) + " M"
           : "S/ " + Math.round(it.pim).toLocaleString("es-PE")}
       </div>
-    </div>`
-  ).join("");
+    </div>`;
+  }).join("");
 
   items.forEach((it, idx) => {
     const canvas = $(prefix + idx);
     if (!canvas) return;
-    const pctVal = it.pct !== null ? it.pct : 0;
+    const pctVal = it.pct;
     const inst = new Chart(canvas, {
       type: "doughnut",
       data: { datasets: [{
@@ -386,41 +397,38 @@ function renderB3() {
   renderDonas(d.registros, d.totalPIM, d.totalRec, "b3dona", b3DonaInstancias, PALETA_B3);
 
   // ── Tabla ──────────────────────────────────────────────────────
-  const notas = [];
   tbody.innerHTML = d.registros.map(r => {
-    const pend   = r.pim - r.rec;
-    const pct    = r.pim > 0 ? r.rec / r.pim * 100 : (r.rec > 0 ? null : 0);
+    const pend       = r.pim - r.rec;
+    const pendMostrar = Math.max(0, pend);
+    // % recaudación: 100% si PIM=0 y rec>0, o si rec>=pim; normal en resto
+    const pctTabla   = r.pim === 0 ? (r.rec > 0 ? 100 : 0) : Math.min(r.rec / r.pim * 100, 100);
     const cod    = (r.descripcion.match(/^(\d+)/) || ["",""])[1];
     const nombre = r.descripcion.replace(/^\d+:\s*/, "").trim();
-    if (r.pim === 0 && r.rec > 0)
-      notas.push(`<strong>Rubro ${cod}:</strong> PIA y PIM = S/ 0 con Recaudado > 0. Ver nota en Bloque 2.`);
-    if (r.pim > 0 && r.rec > r.pim)
-      notas.push(`<strong>Rubro ${cod} (${nombre.substring(0,40)}):</strong> Recaudado (S/ ${fmt(r.rec)}) supera el PIM (S/ ${fmt(r.pim)}). Ocurre cuando se perciben saldos de períodos anteriores no presupuestados. Comportamiento normal en recursos Canon.`);
     return `<tr>
       <td class="cod">${cod}</td>
       <td style="font-weight:600">${nombre}</td>
       <td class="num">${fmtS(r.pia)}</td>
       <td class="num">${fmtS(r.pim)}</td>
       <td class="num">${fmtS(r.rec)}</td>
-      <td class="num" style="color:${pend < 0 ? "var(--rojo-s)" : "inherit"}">${fmtS(pend)}</td>
-      <td>${barraHTML(pct)}</td>
+      <td class="num">${fmtS(pendMostrar)}</td>
+      <td>${barraHTML(pctTabla)}</td>
     </tr>`;
   }).join("");
 
   const tp = d.totalPIM, tr_ = d.totalRec, tpia = d.totalPIA;
-  const tpct = tp > 0 ? tr_ / tp * 100 : null;
+  const tpct  = tp > 0 ? Math.min(tr_ / tp * 100, 100) : (tr_ > 0 ? 100 : 0);
+  const tpend = Math.max(0, tp - tr_);
   tfoot.innerHTML = `<tr>
     <td class="cod">—</td>
     <td style="font-family:'Barlow Condensed';font-weight:800;text-transform:uppercase">TOTAL</td>
     <td class="num">${fmtS(tpia)}</td>
     <td class="num">${fmtS(tp)}</td>
     <td class="num">${fmtS(tr_)}</td>
-    <td class="num">${fmtS(tp - tr_)}</td>
+    <td class="num">${fmtS(tpend)}</td>
     <td>${barraHTML(tpct)}</td>
   </tr>`;
 
-  if (notas.length) { nota.style.display = ""; nota.innerHTML = "⚠️ " + notas.join("<br/>⚠️ "); }
-  else nota.style.display = "none";
+  nota.style.display = "none";
 }
 
 function renderB4() {
@@ -446,39 +454,37 @@ function renderB4() {
   renderDonas(d.registros, d.totalPIM, d.totalRec, "b4dona", b4DonaInstancias, PALETA_B4);
 
   // ── Tabla ──────────────────────────────────────────────────────
-  const notas = [];
   tbody.innerHTML = d.registros.map(r => {
-    const pend   = r.pim - r.rec;
-    const pct    = r.pim > 0 ? r.rec / r.pim * 100 : (r.rec > 0 ? null : 0);
+    const pend        = r.pim - r.rec;
+    const pendMostrar = Math.max(0, pend);
+    const pctTabla    = r.pim === 0 ? (r.rec > 0 ? 100 : 0) : Math.min(r.rec / r.pim * 100, 100);
     const cod    = (r.descripcion.match(/^(\d+)/) || ["",""])[1];
     const nombre = r.descripcion.replace(/^\d+:\s*/, "").trim();
-    if (r.pim > 0 && r.rec > r.pim)
-      notas.push(`<strong>Genérica ${cod} (${nombre.substring(0,50)}):</strong> Puede superar el 100% de recaudación. Los saldos de balance son recursos del año anterior incorporados al presupuesto.`);
     return `<tr>
       <td class="cod">${cod}</td>
       <td style="font-weight:600">${nombre}</td>
       <td class="num">${fmtS(r.pia)}</td>
       <td class="num">${fmtS(r.pim)}</td>
       <td class="num">${fmtS(r.rec)}</td>
-      <td class="num" style="color:${pend < 0 ? "var(--rojo-s)" : "inherit"}">${fmtS(pend)}</td>
-      <td>${barraHTML(pct)}</td>
+      <td class="num">${fmtS(pendMostrar)}</td>
+      <td>${barraHTML(pctTabla)}</td>
     </tr>`;
   }).join("");
 
   const tp = d.totalPIM, tr_ = d.totalRec, tpia = d.totalPIA;
-  const tpct = tp > 0 ? tr_ / tp * 100 : null;
+  const tpct  = tp > 0 ? Math.min(tr_ / tp * 100, 100) : (tr_ > 0 ? 100 : 0);
+  const tpend = Math.max(0, tp - tr_);
   tfoot.innerHTML = `<tr>
     <td class="cod">—</td>
     <td style="font-family:'Barlow Condensed';font-weight:800;text-transform:uppercase">TOTAL</td>
     <td class="num">${fmtS(tpia)}</td>
     <td class="num">${fmtS(tp)}</td>
     <td class="num">${fmtS(tr_)}</td>
-    <td class="num">${fmtS(tp - tr_)}</td>
+    <td class="num">${fmtS(tpend)}</td>
     <td>${barraHTML(tpct)}</td>
   </tr>`;
 
-  if (notas.length) { nota.style.display = ""; nota.innerHTML = "⚠️ " + notas.join("<br/>⚠️ "); }
-  else nota.style.display = "none";
+  nota.style.display = "none";
 }
 
 function renderB5() {
@@ -492,13 +498,10 @@ function renderB5() {
 
   const muns = d.registros.map(r => {
     const pct       = r.pim > 0 ? r.rec / r.pim * 100 : null;
-    const nombre    = r.descripcion.replace(/^\d{6}-\d+:\s*/, "").trim();
-    const nombreFmt = nombre.split(" ").map((w, i) =>
-      i === 0 || w.length > 2 ? w[0] + w.slice(1).toLowerCase() : w.toLowerCase()
-    ).join(" ");
+    const nombre    = r.descripcion.replace(/^\d{6}-\d+:\s*/, "").trim().toUpperCase();
     const esMPL = r.descripcion.includes("140301") ||
                   (/LAMBAYEQUE/i.test(r.descripcion) && /PROVINCIAL/i.test(r.descripcion));
-    return { ...r, pct, nombre: nombreFmt, esMPL };
+    return { ...r, pct, nombre, esMPL };
   });
 
   const porPct   = [...muns].sort((a, b) => (b.pct ?? -1) - (a.pct ?? -1));
