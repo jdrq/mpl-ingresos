@@ -318,13 +318,18 @@ function renderDonas(registros, totalPIM, totalRec, prefix, instArr, paleta) {
                rec: totalRec, pim: totalPIM,
                color: paleta[paleta.length - 1], esTotal: true });
 
-  // Layout: items normales flex-start, TOTAL empujado a la derecha con margin-left:auto
+  // Layout: items normales flex-start con gap, TOTAL separada a la derecha con borde izquierdo
   contenedor.style.display = "flex";
   contenedor.style.justifyContent = "flex-start";
+  contenedor.style.gap = "20px";
+  contenedor.style.alignItems = "flex-start";
   contenedor.innerHTML = items.map((it, idx) => {
-    const esTotal = !!it.esTotal;
+    const esTotal    = !!it.esTotal;
     const marginLeft = esTotal ? "auto" : "0";
-    return `<div style="min-width:120px;max-width:160px;text-align:center;margin-left:${marginLeft}">
+    const borderLeft = esTotal ? "1px solid #e0d8d0" : "none";
+    const paddingLeft = esTotal ? "24px" : "0";
+    return `<div style="min-width:120px;max-width:155px;text-align:center;
+                        margin-left:${marginLeft};border-left:${borderLeft};padding-left:${paddingLeft}">
       <div style="font-family:'Barlow Condensed';font-size:11px;font-weight:700;
                   color:#6b7280;text-transform:uppercase;letter-spacing:.04em;
                   margin-bottom:6px;min-height:28px;display:flex;align-items:center;
