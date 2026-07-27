@@ -321,7 +321,7 @@ function renderDonas(registros, totalPIM, totalRec, prefix, instArr, paleta) {
   // Layout: items normales flex-start con gap, TOTAL separada a la derecha con borde izquierdo
   contenedor.style.display = "flex";
   contenedor.style.justifyContent = "flex-start";
-  contenedor.style.gap = "20px";
+  contenedor.style.gap = "60px";
   contenedor.style.alignItems = "flex-start";
   contenedor.innerHTML = items.map((it, idx) => {
     const esTotal    = !!it.esTotal;
