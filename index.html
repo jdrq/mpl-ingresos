@@ -70,9 +70,10 @@ main{padding:28px 0 60px}
 
 /* ── BLOQUES ── */
 .bloque{background:var(--blanco);border:1px solid var(--linea);border-radius:14px;
-        box-shadow:var(--sombra);margin-bottom:28px;overflow:hidden}
-.bloque-header{background:var(--rojo-osc);padding:13px 20px;display:flex;
-               align-items:center;justify-content:space-between;gap:12px}
+        box-shadow:var(--sombra);margin-bottom:28px;overflow:hidden;position:relative}
+.bloque-header{background:var(--rojo-osc);padding:13px 20px 13px 46px;display:flex;
+               align-items:center;justify-content:space-between;gap:12px;
+               position:relative}
 /* MEJORA: de 17px a 18px/800 — más jerarquía visual en los headers de bloque */
 .bloque-titulo{color:#fff;font-family:"Barlow Condensed";font-weight:800;font-size:18px;
                text-transform:uppercase;letter-spacing:.05em;display:flex;
@@ -81,6 +82,37 @@ main{padding:28px 0 60px}
 .bloque-meta{font-size:11px;color:rgba(255,255,255,.65);font-weight:500;
              text-align:right;letter-spacing:.02em;white-space:nowrap}
 .bloque-body{padding:20px}
+
+/* ── NÚMERO DE BLOQUE ── */
+.bloque-num{
+  position:absolute;top:8px;left:8px;
+  width:26px;height:26px;border-radius:7px;
+  background:var(--rojo);border:2px solid #fff;
+  color:#fff;font-family:"Barlow Condensed";font-weight:800;font-size:12px;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 2px 6px rgba(26,16,16,.28);z-index:3;letter-spacing:0
+}
+
+/* ── FRANJA DE SUBTÍTULO (bajo el header rojo) ── */
+.bloque-subtitle{background:#faf8f6;border-bottom:1px solid var(--linea);
+                 border-left:4px solid var(--dorado);padding:8px 20px;
+                 display:flex;align-items:center;justify-content:space-between;
+                 gap:12px;flex-wrap:wrap}
+.bloque-subtitle-text{font-family:"Barlow Condensed";font-weight:700;font-size:12px;
+                      letter-spacing:.05em;text-transform:uppercase;
+                      color:var(--texto-mut)}
+.bloque-subtitle-date{font-size:11px;font-weight:600;color:var(--texto-mut);
+                      white-space:nowrap}
+
+/* ── PIE DE FUENTE (bajo cada bloque) ── */
+.bloque-footer{background:#faf8f6;border-top:1px solid var(--linea);
+               border-radius:0 0 14px 14px;padding:8px 20px;
+               display:flex;align-items:center;justify-content:space-between;
+               gap:12px;flex-wrap:wrap;font-size:10.5px;font-weight:500;
+               color:var(--texto-mut)}
+.bloque-footer .foot-label{font-family:"Barlow Condensed";font-weight:700;
+                           letter-spacing:.04em;text-transform:uppercase;
+                           color:var(--texto-mut)}
 
 /* ── CARGADOR ── */
 .loader-card{background:var(--blanco);border:1px solid var(--linea);border-radius:14px;
@@ -295,8 +327,12 @@ main{padding:28px 0 60px}
   <!-- BLOQUE 1 — KPIs -->
   <div class="bloque">
     <div class="bloque-header">
+      <div class="bloque-num">01</div>
       <div class="bloque-titulo">RESUMEN DE EJECUCIÓN DE INGRESOS</div>
-      <div class="bloque-meta">Municipalidad Provincial de Lambayeque · <span id="b1fecha">—</span></div>
+    </div>
+    <div class="bloque-subtitle">
+      <span class="bloque-subtitle-text">Resumen general de indicadores presupuestales</span>
+      <span class="bloque-subtitle-date" id="b1fecha">—</span>
     </div>
     <div class="bloque-body">
       <div class="kpi-grid">
@@ -322,13 +358,21 @@ main{padding:28px 0 60px}
         </div>
       </div>
     </div>
+    <div class="bloque-footer">
+      <span>Fuente: Consulta Amigable MEF — Ingresos</span>
+      <span class="foot-label">MPL · INGRESOS 2026</span>
+    </div>
   </div>
 
   <!-- BLOQUE 2 — FUENTE -->
   <div class="bloque">
     <div class="bloque-header">
+      <div class="bloque-num">02</div>
       <div class="bloque-titulo">EJECUCIÓN POR FUENTE DE FINANCIAMIENTO</div>
-      <div class="bloque-meta">Mun. Prov. Lambayeque · <span id="b2fecha">2026</span></div>
+    </div>
+    <div class="bloque-subtitle">
+      <span class="bloque-subtitle-text">Clasificación por fuente de financiamiento del ingreso</span>
+      <span class="bloque-subtitle-date" id="b2fecha">2026</span>
     </div>
     <div class="bloque-body">
       <div id="b2donawrap" style="display:none;gap:12px;flex-wrap:wrap;margin-bottom:20px;justify-content:center;align-items:flex-start"></div>
@@ -348,13 +392,21 @@ main{padding:28px 0 60px}
       </div>
       <div class="nota-bloque" id="b2nota" style="display:none"></div>
     </div>
+    <div class="bloque-footer">
+      <span>Fuente: Consulta Amigable MEF — Ingresos</span>
+      <span class="foot-label">MPL · INGRESOS 2026</span>
+    </div>
   </div>
 
   <!-- BLOQUE 3 — RUBRO -->
   <div class="bloque">
     <div class="bloque-header">
+      <div class="bloque-num">03</div>
       <div class="bloque-titulo">EJECUCIÓN POR RUBRO DE INGRESO</div>
-      <div class="bloque-meta">Mun. Prov. Lambayeque · <span id="b3fecha">2026</span></div>
+    </div>
+    <div class="bloque-subtitle">
+      <span class="bloque-subtitle-text">Clasificación por rubro de ingreso</span>
+      <span class="bloque-subtitle-date" id="b3fecha">2026</span>
     </div>
     <div class="bloque-body">
       <div id="b3donawrap" style="display:none;gap:12px;flex-wrap:wrap;margin-bottom:20px;justify-content:center;align-items:flex-start"></div>
@@ -375,13 +427,21 @@ main{padding:28px 0 60px}
       </div>
       <div class="nota-bloque" id="b3nota" style="display:none"></div>
     </div>
+    <div class="bloque-footer">
+      <span>Fuente: Consulta Amigable MEF — Ingresos</span>
+      <span class="foot-label">MPL · INGRESOS 2026</span>
+    </div>
   </div>
 
   <!-- BLOQUE 4 — GENÉRICA -->
   <div class="bloque">
     <div class="bloque-header">
+      <div class="bloque-num">04</div>
       <div class="bloque-titulo">EJECUCIÓN POR GENÉRICA DE INGRESO</div>
-      <div class="bloque-meta">Mun. Prov. Lambayeque · <span id="b4fecha">2026</span></div>
+    </div>
+    <div class="bloque-subtitle">
+      <span class="bloque-subtitle-text">Clasificación por genérica de ingreso</span>
+      <span class="bloque-subtitle-date" id="b4fecha">2026</span>
     </div>
     <div class="bloque-body">
       <div id="b4donawrap" style="display:none;gap:12px;flex-wrap:wrap;margin-bottom:20px;justify-content:center;align-items:flex-start"></div>
@@ -402,13 +462,21 @@ main{padding:28px 0 60px}
       </div>
       <div class="nota-bloque" id="b4nota" style="display:none"></div>
     </div>
+    <div class="bloque-footer">
+      <span>Fuente: Consulta Amigable MEF — Ingresos</span>
+      <span class="foot-label">MPL · INGRESOS 2026</span>
+    </div>
   </div>
 
   <!-- BLOQUE 5 — RANKING -->
   <div class="bloque">
     <div class="bloque-header">
+      <div class="bloque-num">05</div>
       <div class="bloque-titulo">RANKING DE MUNICIPALIDADES — DPTO. LAMBAYEQUE</div>
-      <div class="bloque-meta" id="b5meta">38 municipalidades · ordenado por % Recaudación · 2026</div>
+    </div>
+    <div class="bloque-subtitle">
+      <span class="bloque-subtitle-text">Comparativo entre municipalidades del departamento</span>
+      <span class="bloque-subtitle-date" id="b5meta">38 municipalidades · ordenado por % Recaudación · 2026</span>
     </div>
     <div class="bloque-body">
       <div class="rank-highlight" id="b5highlight">
@@ -432,13 +500,21 @@ main{padding:28px 0 60px}
         corresponde a redondeo interno del sistema.
       </div>
     </div>
+    <div class="bloque-footer">
+      <span>Fuente: Consulta Amigable MEF — Ingresos</span>
+      <span class="foot-label">MPL · INGRESOS 2026</span>
+    </div>
   </div>
 
   <!-- BLOQUE 6 — COMPARATIVO HISTÓRICO ENE–JUL -->
   <div class="bloque" id="b6bloque">
     <div class="bloque-header">
+      <div class="bloque-num">06</div>
       <div class="bloque-titulo">COMPARATIVO HISTÓRICO — RECAUDADO ENE–JUL (2019–2026)</div>
-      <div class="bloque-meta">Mun. Prov. Lambayeque · <span id="b6fecha">2026</span></div>
+    </div>
+    <div class="bloque-subtitle">
+      <span class="bloque-subtitle-text">Serie histórica comparativa por año</span>
+      <span class="bloque-subtitle-date" id="b6fecha">2026</span>
     </div>
     <div class="bloque-body">
       <div id="b6kpis" style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:20px"></div>
@@ -450,13 +526,21 @@ main{padding:28px 0 60px}
         2026: acumulado diario desde <code>rubro.xls</code> (fila total MPL)
       </p>
     </div>
+    <div class="bloque-footer">
+      <span>Fuente: Consulta Amigable MEF — Ingresos</span>
+      <span class="foot-label">MPL · INGRESOS 2026</span>
+    </div>
   </div>
 
   <!-- BLOQUE 7 — COMPARATIVO HISTÓRICO RUBRO 08 -->
   <div class="bloque" id="b7bloque">
     <div class="bloque-header">
+      <div class="bloque-num">07</div>
       <div class="bloque-titulo">IMPUESTOS MUNICIPALES (RUB. 08) — RECAUDADO ENE–JUL POR MES (2022–2026)</div>
-      <div class="bloque-meta">Mun. Prov. Lambayeque · <span id="b7fecha">2022–2026</span></div>
+    </div>
+    <div class="bloque-subtitle">
+      <span class="bloque-subtitle-text">Serie histórica — Impuestos municipales</span>
+      <span class="bloque-subtitle-date" id="b7fecha">2022–2026</span>
     </div>
     <div class="bloque-body">
       <div id="b7kpis" style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:20px"></div>
@@ -468,14 +552,22 @@ main{padding:28px 0 60px}
         2026 ★: acumulado diario Ene–Jul desde <code>rubro.xls</code> (fila Rubro 08) — se actualiza con la carga diaria
       </p>
     </div>
+    <div class="bloque-footer">
+      <span>Fuente: Consulta Amigable MEF — Ingresos</span>
+      <span class="foot-label">MPL · INGRESOS 2026</span>
+    </div>
   </div>
 
 
   <!-- BLOQUE 8 — COMPARATIVO HISTÓRICO RUBRO 09 -->
   <div class="bloque" id="b8bloque">
     <div class="bloque-header">
+      <div class="bloque-num">08</div>
       <div class="bloque-titulo">RECURSOS DIRECTAMENTE RECAUDADOS (RUB. 09) — RECAUDADO ENE–JUL (2021–2026)</div>
-      <div class="bloque-meta">Mun. Prov. Lambayeque · <span id="b8fecha">2021–2026</span></div>
+    </div>
+    <div class="bloque-subtitle">
+      <span class="bloque-subtitle-text">Serie histórica — Recursos directamente recaudados</span>
+      <span class="bloque-subtitle-date" id="b8fecha">2021–2026</span>
     </div>
     <div class="bloque-body">
       <div id="b8kpis" style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:20px"></div>
@@ -486,6 +578,10 @@ main{padding:28px 0 60px}
         Fuente: Consulta Amigable MEF · 2021–2025: acumulado Ene–Jul de archivos anuales Rubro 09 ·
         2026 ★: acumulado diario desde <code>rubro.xls</code> (fila Rubro 09) — se actualiza con la carga diaria
       </p>
+    </div>
+    <div class="bloque-footer">
+      <span>Fuente: Consulta Amigable MEF — Ingresos</span>
+      <span class="foot-label">MPL · INGRESOS 2026</span>
     </div>
   </div>
 
