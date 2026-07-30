@@ -217,7 +217,7 @@ main{padding:28px 0 60px}
 
 /* ── PDF ── */
 @media print{
-  .loader-card,.btn-pdf{display:none !important}
+  .loader-card,.btn-pdf,.site-footer{display:none !important}
   body{background:#fff}
   .bloque{box-shadow:none;border:1px solid #ccc;page-break-inside:avoid}
   .bloque-header,.pdf-table thead tr{-webkit-print-color-adjust:exact;
@@ -225,7 +225,19 @@ main{padding:28px 0 60px}
 }
 @page{size:A4 landscape;margin:15mm}
 
-/* ── RESPONSIVE ── */
+/* ── FOOTER GLOBAL ── */
+.site-footer{background:var(--rojo-osc);border-top:3px solid var(--dorado);
+             margin-top:10px}
+.site-footer .wrap{padding:14px 24px;display:flex;align-items:center;
+                   justify-content:space-between;gap:12px;flex-wrap:wrap}
+.site-footer-text{font-size:11.5px;color:rgba(255,255,255,.85);font-weight:500;
+                  letter-spacing:.01em}
+.site-footer-text strong{color:#fff;font-weight:700}
+#btnAdminToggle{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.3);
+             border-radius:6px;width:30px;height:30px;cursor:pointer;font-size:15px;
+             color:#fff;opacity:.55;line-height:1;padding:0;flex:0 0 auto;
+             transition:opacity .15s}
+#btnAdminToggle:hover{opacity:1}
 @media(max-width:900px){
   .kpi-grid{grid-template-columns:repeat(2,1fr)}
   .loader-card{grid-template-columns:1fr}
@@ -287,9 +299,6 @@ main{padding:28px 0 60px}
       </svg>
       Exportar PDF
     </button>
-    <button id="btnAdminToggle" title="Panel técnico (solo ORAD)"
-      style="background:transparent;border:1px solid var(--linea);border-radius:6px;
-             width:30px;height:30px;cursor:pointer;font-size:15px;opacity:.4;line-height:1;padding:0">⚙</button>
   </div>
 
   <div id="panelTecnico" style="display:none">
@@ -495,6 +504,10 @@ main{padding:28px 0 60px}
           <tbody id="b5tbody"><tr><td colspan="6" class="vacio">Carga ranking.xls para ver los datos.</td></tr></tbody>
         </table>
       </div>
+      <div class="nota-bloque" id="b5nota" style="display:none">
+        <strong>Nota:</strong> Una diferencia de S/ 1 entre la suma de filas y el total del portal MEF
+        corresponde a redondeo interno del sistema.
+      </div>
     </div>
     <div class="bloque-footer">
       <span>Fuente: Consulta Amigable MEF — Ingresos</span>
@@ -517,6 +530,10 @@ main{padding:28px 0 60px}
       <div style="position:relative;height:320px;background:#fff;border-radius:10px;padding:8px 0 0 0">
         <canvas id="b6chart"></canvas>
       </div>
+      <p style="margin:10px 0 0 0;font-size:11px;color:#888;font-family:'Barlow'">
+        Fuente: Consulta Amigable MEF · 2019–2025: acumulado Ene–Jul (meses 1 a 7) de archivos anuales ·
+        2026: acumulado diario desde <code>rubro.xls</code> (fila total MPL)
+      </p>
     </div>
     <div class="bloque-footer">
       <span>Fuente: Consulta Amigable MEF — Ingresos</span>
@@ -539,6 +556,10 @@ main{padding:28px 0 60px}
       <div style="position:relative;height:340px;background:#fff;border-radius:10px;padding:8px 0 0 0">
         <canvas id="b7chart"></canvas>
       </div>
+      <p style="margin:10px 0 0 0;font-size:11px;color:#888;font-family:'Barlow'">
+        Fuente: Consulta Amigable MEF · 2022–2025: recaudado mensual de archivos anuales Rubro 08 ·
+        2026 ★: acumulado diario Ene–Jul desde <code>rubro.xls</code> (fila Rubro 08) — se actualiza con la carga diaria
+      </p>
     </div>
     <div class="bloque-footer">
       <span>Fuente: Consulta Amigable MEF — Ingresos</span>
@@ -562,6 +583,10 @@ main{padding:28px 0 60px}
       <div style="position:relative;height:320px;background:#fff;border-radius:10px;padding:8px 0 0 0">
         <canvas id="b8chart"></canvas>
       </div>
+      <p style="margin:10px 0 0 0;font-size:11px;color:#888;font-family:'Barlow'">
+        Fuente: Consulta Amigable MEF · 2021–2025: acumulado Ene–Jul de archivos anuales Rubro 09 ·
+        2026 ★: acumulado diario desde <code>rubro.xls</code> (fila Rubro 09) — se actualiza con la carga diaria
+      </p>
     </div>
     <div class="bloque-footer">
       <span>Fuente: Consulta Amigable MEF — Ingresos</span>
@@ -572,6 +597,15 @@ main{padding:28px 0 60px}
 
 </div>
 </main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="site-footer-text">
+      Fuente: <strong>SIAF</strong> — Consulta Amigable / Gasto Diario BI — <strong>MEF</strong> · apps5.mineco.gob.pe
+    </div>
+    <button id="btnAdminToggle" title="Panel técnico (solo ORAD)">⚙</button>
+  </div>
+</footer>
 
 <script>
 (function(){
