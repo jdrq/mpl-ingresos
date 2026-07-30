@@ -721,23 +721,48 @@ function exportarPDF() {
 
 function generarPDF() {
   const { jsPDF } = window.jspdf;
-  html2canvas(document.body, { scale: 1.5, useCORS: true, logging: false }).then(canvas => {
-    const pdf    = new jsPDF({ orientation: "landscape", unit: "mm", format: "a4" });
-    const pw     = pdf.internal.pageSize.getWidth();
-    const ph     = pdf.internal.pageSize.getHeight();
-    const sliceH = Math.round(canvas.width * ph / pw);
-    let yOff = 0;
-    while (yOff < canvas.height) {
-      if (yOff > 0) pdf.addPage();
-      const sl = document.createElement("canvas");
-      sl.width  = canvas.width;
-      sl.height = Math.min(sliceH, canvas.height - yOff);
-      sl.getContext("2d").drawImage(canvas, 0, -yOff);
-      pdf.addImage(sl.toDataURL("image/jpeg", 0.85), "JPEG", 0, 0, pw, ph);
-      yOff += sliceH;
-    }
+  const btn = document.querySelector(".btn-pdf");
+  const btnTxtOriginal = btn ? btn.innerHTML : null;
+
+  const bloques = Array.from(document.querySelectorAll(".bloque"));
+  if (!bloques.length) return;
+
+  const pdf     = new jsPDF({ orientation: "landscape", unit: "mm", format: "a4" });
+  const pw      = pdf.internal.pageSize.getWidth();
+  const ph      = pdf.internal.pageSize.getHeight();
+  const margen  = 8; // mm de margen alrededor de cada bloque
+
+  if (btn) btn.innerHTML = "Generando PDF…";
+
+  // Procesa los bloques uno por uno (en secuencia) para no saturar memoria
+  bloques.reduce((promesa, bloque, idx) => {
+    return promesa.then(() =>
+      html2canvas(bloque, { scale: 2, useCORS: true, logging: false, backgroundColor: "#ffffff" })
+        .then(canvas => {
+          if (idx > 0) pdf.addPage("a4", "landscape");
+
+          // Ajusta el bloque a la hoja horizontal manteniendo proporción
+          const areaW = pw - margen * 2;
+          const areaH = ph - margen * 2;
+          let imgW = areaW;
+          let imgH = canvas.height * imgW / canvas.width;
+          if (imgH > areaH) {
+            imgH = areaH;
+            imgW = canvas.width * imgH / canvas.height;
+          }
+          const x = (pw - imgW) / 2;
+          const y = (ph - imgH) / 2;
+
+          pdf.addImage(canvas.toDataURL("image/jpeg", 0.92), "JPEG", x, y, imgW, imgH);
+        })
+    );
+  }, Promise.resolve()).then(() => {
     const hoy = new Date();
     pdf.save(`MPL_Ingresos_${String(hoy.getDate()).padStart(2,"0")}${String(hoy.getMonth()+1).padStart(2,"0")}${hoy.getFullYear()}.pdf`);
+    if (btn) btn.innerHTML = btnTxtOriginal;
+  }).catch(err => {
+    console.error("[MPL] Error generando PDF:", err);
+    if (btn) btn.innerHTML = btnTxtOriginal;
   });
 }
 
