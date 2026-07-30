@@ -531,7 +531,7 @@ function renderB5() {
     const posStyle = pos <= 3 ? 'style="color:var(--dorado-osc);font-weight:800"' : 'style="font-weight:700"';
     return `<tr ${trC}>
       <td style="text-align:center" ${posStyle}>${pos}°</td>
-      <td style="font-weight:${m.esMPL ? "700" : "500"}">${m.nombre}</td>
+      <td style="font-weight:700">${m.nombre}</td>
       <td class="num">${fmtS(m.pia)}</td>
       <td class="num">${fmtS(m.pim)}</td>
       <td class="num">${fmtS(m.rec)}</td>
