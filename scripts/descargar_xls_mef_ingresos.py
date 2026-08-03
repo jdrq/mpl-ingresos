@@ -19,8 +19,10 @@ Los archivos se guardan en la carpeta xls/ del proyecto
 """
 
 from playwright.sync_api import sync_playwright
+import subprocess
 import time
 import shutil
+from datetime import datetime
 from pathlib import Path
 
 # ─────────────────────────────────────────────────────────────────
@@ -61,6 +63,53 @@ def backup_y_guardar(descarga, nombre):
         print(f"  → Backup guardado en {respaldo}")
     descarga.save_as(destino)
     print(f"  [OK] {nombre} → {destino.resolve()}")
+
+
+# ─────────────────────────────────────────────────────────────────
+# GIT: commit + push automático (solo si 4/4 exitosos)
+# ─────────────────────────────────────────────────────────────────
+def git_push_automatico():
+    """
+    Ejecuta git add xls/ → git commit → git push.
+    Si cualquier paso falla, imprime el error y NO continúa.
+    Nunca lanza excepción — el fallo es informativo, no fatal.
+    """
+    fecha_hoy = datetime.now().strftime("%d/%m/%Y")
+    mensaje   = f"Actualización {fecha_hoy}"
+
+    pasos = [
+        ("git add",    ["git", "add", "xls/"]),
+        ("git commit", ["git", "commit", "-m", mensaje]),
+        ("git push",   ["git", "push"]),
+    ]
+
+    print("\n" + "─" * 60)
+    print("  GIT — Publicando en GitHub Pages")
+    print("─" * 60)
+
+    for nombre_paso, cmd in pasos:
+        print(f"  → {nombre_paso}...", end=" ", flush=True)
+        resultado = subprocess.run(
+            cmd,
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+        )
+        if resultado.returncode == 0:
+            print("OK")
+            if nombre_paso == "git commit" and resultado.stdout.strip():
+                print(f"     {resultado.stdout.strip().splitlines()[0]}")
+        else:
+            print("FALLÓ")
+            detalle = (resultado.stderr or resultado.stdout or "sin detalle").strip()
+            print(f"  [ERROR {nombre_paso}] {detalle}")
+            print("  ⚠ El push fue cancelado. Revisa el error y ejecuta manualmente:")
+            print(f'     git add xls/ && git commit -m "{mensaje}" && git push')
+            return False
+
+    print("\n  ✅ GitHub Pages actualizado correctamente.")
+    print(f'     Commit: "{mensaje}"')
+    return True
 
 
 # ─────────────────────────────────────────────────────────────────
@@ -262,29 +311,32 @@ def main():
                     print("  Deteniendo el script.")
                     break
 
-        # ── Resumen ──────────────────────────────────────────────
-        print("\n" + "=" * 60)
-        print("  RESUMEN")
-        print("=" * 60)
-        for n in exitosos:
-            print(f"  ✓  {n}")
-        for n in fallidos:
-            print(f"  ✗  {n}  ← revisar manualmente")
-
-        if not fallidos:
-            print(
-                "\n  Todos los archivos descargados correctamente.\n"
-                "  Próximo paso:\n"
-                "    git add xls/\n"
-                f"    git commit -m \"Actualización {ANIO}\"\n"
-                "    git push"
-            )
-        else:
-            print(f"\n  {len(fallidos)} archivo(s) fallaron.")
-            print(f"  Descarga manual: {URL_BASE}")
-
         input("\nPresiona ENTER para cerrar el navegador...")
         browser.close()
+
+    # ── Resumen ──────────────────────────────────────────────────
+    print("\n" + "=" * 60)
+    print("  RESUMEN DE DESCARGA")
+    print("=" * 60)
+    for n in exitosos:
+        print(f"  ✓  {n}")
+    for n in fallidos:
+        print(f"  ✗  {n}  ← revisar manualmente")
+
+    # ── Decisión Git: todo o nada ─────────────────────────────────
+    total_esperado = len(TAREAS)
+    if len(exitosos) == total_esperado and not fallidos:
+        # 4/4 — publicar en GitHub Pages automáticamente
+        git_push_automatico()
+    else:
+        # Falló al menos 1 — NO subir nada
+        print("\n" + "=" * 60)
+        print("  ⛔ GIT — NO SE SUBIÓ NADA AL REPOSITORIO")
+        print("=" * 60)
+        print(f"  {len(fallidos)} de {total_esperado} archivo(s) fallaron.")
+        print("  El repositorio queda sin cambios para evitar publicar datos incompletos.")
+        print(f"\n  Descarga manual: {URL_BASE}")
+        print("  Una vez resuelto el problema, ejecuta el script nuevamente.")
 
 
 if __name__ == "__main__":

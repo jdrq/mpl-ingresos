@@ -609,7 +609,7 @@ function renderB6() {
       return `<div style="background:${es2026 ? "#fef3c7" : "#f9fafb"};border:1px solid ${es2026 ? "#fbbf24" : "#e5e7eb"};
                border-radius:10px;padding:10px 16px;min-width:110px;flex:1;text-align:center">
         <div style="font-family:'Barlow Condensed';font-size:13px;font-weight:700;color:#6b7280;margin-bottom:3px">
-          Ene–Jul ${a}${es2026 ? " ★" : ""}
+          Ene–Ago ${a}${es2026 ? " ★" : ""}
         </div>
         <div style="font-family:'Barlow Condensed';font-size:18px;font-weight:800;color:${es2026 ? "#92400e" : "#1f2937"}">
           ${v ? fmtM(v) : "Cargando…"}
@@ -630,9 +630,9 @@ function renderB6() {
   b6ChartInstance = new Chart(canvas, {
     type: "bar",
     data: {
-      labels: años.map(a => `Ene–Jul ${a}${a === 2026 ? " ★" : ""}`),
+      labels: años.map(a => `Ene–Ago ${a}${a === 2026 ? " ★" : ""}`),
       datasets: [{
-        label: "Recaudado Ene–Jul",
+        label: "Recaudado Ene–Ago",
         data: valores,
         backgroundColor: colores,
         borderColor: borderColores,
@@ -828,7 +828,7 @@ function renderB7() {
         deltaHtml = `<span style="font-size:10px;color:${color};font-weight:700">${signo} ${Math.abs(pct).toFixed(1)}%</span>`;
       }
       return `<div style="background:${es2026 ? "#fef3c7" : "#f9fafb"};border:1px solid ${es2026 ? "#fbbf24" : "#e5e7eb"};border-radius:10px;padding:10px 16px;min-width:110px;flex:1;text-align:center">
-        <div style="font-family:'Barlow Condensed';font-size:13px;font-weight:700;color:#6b7280;margin-bottom:3px">Ene\u2013Jul ${a}${es2026 ? " \u2605" : ""}</div>
+        <div style="font-family:'Barlow Condensed';font-size:13px;font-weight:700;color:#6b7280;margin-bottom:3px">Ene\u2013Ago ${a}${es2026 ? " \u2605" : ""}</div>
         <div style="font-family:'Barlow Condensed';font-size:18px;font-weight:800;color:${es2026 ? "#92400e" : "#1f2937"}">${v ? fmtM(v) : "Cargando\u2026"}</div>
         <div style="margin-top:3px">${deltaHtml}</div>
       </div>`;
@@ -845,9 +845,9 @@ function renderB7() {
   b7ChartInstance = new Chart(canvas, {
     type: "bar",
     data: {
-      labels: años.map(a => `Ene\u2013Jul ${a}${a === 2026 ? " \u2605" : ""}`),
+      labels: años.map(a => `Ene\u2013Ago ${a}${a === 2026 ? " \u2605" : ""}`),
       datasets: [{
-        label: "Recaudado Ene\u2013Jul Rubro 08",
+        label: "Recaudado Ene\u2013Ago Rubro 08",
         data: valores,
         backgroundColor: colores,
         borderColor: borderColores,
@@ -973,7 +973,7 @@ function renderB8() {
         deltaHtml = `<span style="font-size:10px;color:${color};font-weight:700">${signo} ${Math.abs(pct).toFixed(1)}%</span>`;
       }
       return `<div style="background:${es2026 ? "#fef3c7" : "#f9fafb"};border:1px solid ${es2026 ? "#fbbf24" : "#e5e7eb"};border-radius:10px;padding:10px 16px;min-width:110px;flex:1;text-align:center">
-        <div style="font-family:'Barlow Condensed';font-size:13px;font-weight:700;color:#6b7280;margin-bottom:3px">Ene\u2013Jul ${a}${es2026 ? " \u2605" : ""}</div>
+        <div style="font-family:'Barlow Condensed';font-size:13px;font-weight:700;color:#6b7280;margin-bottom:3px">Ene\u2013Ago ${a}${es2026 ? " \u2605" : ""}</div>
         <div style="font-family:'Barlow Condensed';font-size:18px;font-weight:800;color:${es2026 ? "#92400e" : "#1f2937"}">${v ? fmtM(v) : "Cargando\u2026"}</div>
         <div style="margin-top:3px">${deltaHtml}</div>
       </div>`;
@@ -990,9 +990,9 @@ function renderB8() {
   b8ChartInstance = new Chart(canvas, {
     type: "bar",
     data: {
-      labels: años.map(a => `Ene\u2013Jul ${a}${a === 2026 ? " \u2605" : ""}`),
+      labels: años.map(a => `Ene\u2013Ago ${a}${a === 2026 ? " \u2605" : ""}`),
       datasets: [{
-        label: "Recaudado Ene\u2013Jul Rubro 09",
+        label: "Recaudado Ene\u2013Ago Rubro 09",
         data: valores,
         backgroundColor: colores,
         borderColor: borderColores,
