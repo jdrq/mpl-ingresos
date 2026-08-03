@@ -494,7 +494,7 @@ function renderB4() {
 
 function renderB5() {
   const d     = datos.ranking;
-  const tbody = $("b5tbody"), nota = $("b5nota"), hl = $("b5highlight");
+  const tbody = $("b5tbody"), hl = $("b5highlight");
   if (!d || !d.registros.length) {
     tbody.innerHTML = '<tr><td colspan="6" class="vacio">Carga ranking.xls para ver los datos.</td></tr>';
     hl.textContent = "Carga ranking.xls para ver la posición de la Municipalidad Provincial de Lambayeque.";
@@ -538,8 +538,6 @@ function renderB5() {
       <td>${barraHTML(m.pct)}</td>
     </tr>`;
   }).join("");
-
-  nota.style.display = "";
 }
 
 $("pick").addEventListener("click", () => $("file").click());
