@@ -1,0 +1,58 @@
+{
+  "PREDIAL_CORRIENTE": {
+    "label": "Predial Corriente",
+    "2021": 2152531,
+    "2022": 1748191,
+    "2023": 1673505,
+    "2024": 2080539,
+    "2025": 2521198
+  },
+  "REGULARIZACION_PREDIAL": {
+    "label": "Regularización Predial",
+    "2021": 20651,
+    "2022": 1228503,
+    "2023": 601092,
+    "2024": 710120,
+    "2025": 852023
+  },
+  "ALCABALA": {
+    "label": "Alcabala",
+    "2021": 852992,
+    "2022": 1813482,
+    "2023": 730522,
+    "2024": 719697,
+    "2025": 770212
+  },
+  "PATRIMONIO_VEHICULAR": {
+    "label": "Al Patrimonio Vehicular",
+    "2021": 124092,
+    "2022": 186088,
+    "2023": 96082,
+    "2024": 171879,
+    "2025": 314071
+  },
+  "SANCIONES_TRIBUTARIAS": {
+    "label": "Sanciones Tributarias y Aduaneras",
+    "2021": 159750,
+    "2022": 196478,
+    "2023": 310292,
+    "2024": 249782,
+    "2025": 160516
+  },
+  "INTERESES": {
+    "label": "Intereses",
+    "2021": 843,
+    "2022": 37466,
+    "2023": 112631,
+    "2024": 182947,
+    "2025": 133098
+  },
+  "IMPUESTO_SELECTIVO": {
+    "label": "Impuesto Selectivo a Servicios Específicos",
+    "2021": 0,
+    "2022": 0,
+    "2023": 9206,
+    "2024": 398368,
+    "2025": 446783
+  }
+}

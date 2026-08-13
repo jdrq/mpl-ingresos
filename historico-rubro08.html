@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Histórico Rubro 08 — Impuestos Municipales | MPL</title>
+<link rel="icon" type="image/png" href="img/favicon.png"/>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --rojo:#9a1820; --rojo-osc:#7a1219; --dorado:#fcc21b; --dorado-osc:#d9a000;
+  --blanco:#ffffff; --bg:#f4f1ee; --linea:#e0d8d0; --texto:#1a1010; --texto-mut:#6b5b5b;
+  --sombra:0 1px 3px rgba(26,16,16,.07),0 6px 24px rgba(26,16,16,.07);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"Barlow",system-ui,sans-serif;color:var(--texto);background:var(--bg);
+     line-height:1.5;-webkit-font-smoothing:antialiased;font-weight:400}
+h1,.bloque-titulo,.cond{font-family:"Barlow Condensed",system-ui,sans-serif;letter-spacing:.01em}
+.wrap{max-width:1280px;margin:0 auto;padding:0 22px}
+.topbar{background:var(--blanco);border-bottom:1px solid var(--linea)}
+.topbar .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:10px 24px}
+.brand{display:flex;align-items:center;gap:12px}
+.escudo{width:46px;height:46px;object-fit:contain}
+.brand-inst{font-family:"Barlow Condensed";font-weight:800;font-size:18px;
+            color:var(--texto);letter-spacing:.03em;text-transform:uppercase}
+.titleband{background:var(--rojo)}
+.titleband .wrap{padding:14px 24px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.titleband h1{color:#fff;font-weight:800;font-size:26px;text-transform:uppercase;letter-spacing:.03em;margin:0}
+.titleband .sub{color:rgba(255,255,255,.75);font-size:12px;font-weight:600;margin-top:2px}
+.yellowband{background:var(--dorado);height:10px}
+.btn-back{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.14);
+          border:1px solid rgba(255,255,255,.32);color:#fff;border-radius:8px;padding:8px 16px;
+          font-family:"Barlow Condensed";font-weight:700;font-size:13px;text-transform:uppercase;
+          letter-spacing:.04em;text-decoration:none;transition:background .15s}
+.btn-back:hover{background:rgba(255,255,255,.24)}
+main{padding:28px 0 60px}
+.bloque{background:var(--blanco);border:1px solid var(--linea);border-radius:14px;
+        box-shadow:var(--sombra);margin-bottom:26px;overflow:hidden;position:relative}
+.bloque-header{background:var(--rojo-osc);padding:13px 20px 13px 46px;display:flex;
+               align-items:center;justify-content:space-between;gap:12px;position:relative}
+.bloque-titulo{color:#fff;font-weight:800;font-size:17px;text-transform:uppercase;letter-spacing:.04em}
+.bloque-num{position:absolute;top:8px;left:8px;width:26px;height:26px;border-radius:7px;
+  background:var(--rojo);border:2px solid #fff;color:#fff;font-family:"Barlow Condensed";
+  font-weight:800;font-size:12px;display:flex;align-items:center;justify-content:center;
+  box-shadow:0 2px 6px rgba(26,16,16,.28);z-index:3}
+.bloque-subtitle{background:#faf8f6;border-bottom:1px solid var(--linea);border-left:4px solid var(--dorado);
+                 padding:8px 20px;display:flex;align-items:center;justify-content:space-between;
+                 gap:12px;flex-wrap:wrap}
+.bloque-subtitle-text{font-family:"Barlow Condensed";font-weight:700;font-size:12px;
+                      letter-spacing:.05em;text-transform:uppercase;color:var(--texto-mut)}
+.bloque-subtitle-date{font-size:11px;font-weight:600;color:var(--texto-mut)}
+.bloque-body{padding:20px}
+.bloque-footer{background:#faf8f6;border-top:1px solid var(--linea);border-radius:0 0 14px 14px;
+               padding:8px 20px;display:flex;align-items:center;justify-content:space-between;
+               gap:12px;flex-wrap:wrap;font-size:10.5px;font-weight:500;color:var(--texto-mut)}
+.foot-label{font-family:"Barlow Condensed";font-weight:700;letter-spacing:.04em;text-transform:uppercase}
+.vacio{padding:36px;text-align:center;color:#aaa;font-size:13px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:26px}
+@media(max-width:900px){.grid2{grid-template-columns:1fr}}
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+</head>
+<body>
+
+<header>
+  <div class="topbar">
+    <div class="wrap">
+      <div class="brand">
+        <img class="escudo" src="img/escudo.png" alt="Escudo MPL"/>
+        <span class="brand-inst">Municipalidad Provincial de Lambayeque</span>
+      </div>
+      <a class="btn-back" href="index.html">&larr; Volver al Dashboard</a>
+    </div>
+  </div>
+  <div class="titleband">
+    <div class="wrap">
+      <div>
+        <h1>Histórico Rubro 08 — Impuestos Municipales</h1>
+        <div class="sub">Serie comparativa Ene–Ago 2021–2025, por concepto de ingreso</div>
+      </div>
+    </div>
+  </div>
+  <div class="yellowband"></div>
+</header>
+
+<main>
+  <div class="wrap">
+    <div class="grid2" id="bloquesContainer">
+      <div class="bloque"><div class="bloque-body vacio">Cargando datos históricos…</div></div>
+    </div>
+  </div>
+</main>
+
+<script>
+  window.HIST_CONFIG = { jsonPath: "data/historico_conceptos_rubro08.json" };
+</script>
+<script src="data/historico-conceptos.js"></script>
+</body>
+</html>

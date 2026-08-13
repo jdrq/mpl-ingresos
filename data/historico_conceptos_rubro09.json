@@ -1,0 +1,74 @@
+{
+  "VENTA_BIENES_AGRICOLAS": {
+    "label": "Venta de Bienes Agrícolas y Forestales",
+    "2021": 352,
+    "2022": 1323,
+    "2023": 1538,
+    "2024": 2941,
+    "2025": 1826
+  },
+  "REGISTROS_LICENCIAS": {
+    "label": "Registros y Licencias",
+    "2021": 62164,
+    "2022": 105228,
+    "2023": 73859,
+    "2024": 100159,
+    "2025": 93545
+  },
+  "DERECHOS_CONSTRUCCION": {
+    "label": "Derechos Admin. de Construcción",
+    "2021": 99182,
+    "2022": 133876,
+    "2023": 91768,
+    "2024": 76375,
+    "2025": 110578
+  },
+  "DERECHOS_TRANSPORTES_COMUNICACIONES": {
+    "label": "Derechos Admin. de Transportes y Comunicaciones",
+    "2021": 410086,
+    "2022": 701959,
+    "2023": 470904,
+    "2024": 546349,
+    "2025": 258864
+  },
+  "DERECHOS_INDUSTRIA_COMERCIO": {
+    "label": "Derechos Admin. de Industria y Comercio",
+    "2021": 132075,
+    "2022": 194739,
+    "2023": 184822,
+    "2024": 215566,
+    "2025": 237283
+  },
+  "OTROS_DERECHOS_ADMINISTRATIVOS": {
+    "label": "Otros Derechos Administrativos",
+    "2021": 102894,
+    "2022": 139109,
+    "2023": 149780,
+    "2024": 336908,
+    "2025": 204609
+  },
+  "OTROS_INGRESOS_SERVICIOS": {
+    "label": "Otros Ingresos por Prestación de Servicios",
+    "2021": 984494,
+    "2022": 1026630,
+    "2023": 732597,
+    "2024": 933797,
+    "2025": 1063051
+  },
+  "INTERESES": {
+    "label": "Intereses",
+    "2021": 2138,
+    "2022": 6228,
+    "2023": 8391,
+    "2024": 15819,
+    "2025": 13048
+  },
+  "INFRACCIONES_TRANSITO": {
+    "label": "Infracciones Reglamento de Tránsito",
+    "2021": 199023,
+    "2022": 258377,
+    "2023": 294028,
+    "2024": 275520,
+    "2025": 239572
+  }
+}
