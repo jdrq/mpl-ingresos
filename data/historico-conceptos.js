@@ -21,7 +21,7 @@ function crearBloqueHTML(numero, key, concepto) {
       <div class="bloque-titulo">${concepto.label.toUpperCase()}</div>
     </div>
     <div class="bloque-subtitle">
-      <span class="bloque-subtitle-text">Serie histórica Ene–Ago</span>
+      <span class="bloque-subtitle-text">Comparación de Ingresos (Enero–Agosto)</span>
       <span class="bloque-subtitle-date">${window.HIST_RANGO || "2021–2025"}</span>
     </div>
     <div class="bloque-body">
@@ -30,7 +30,7 @@ function crearBloqueHTML(numero, key, concepto) {
       </div>
     </div>
     <div class="bloque-footer">
-      <span>Fuente: Consulta Amigable MEF — Ingresos (corte anual, actualización manual)</span>
+      <span>Fuente: Consulta Amigable MEF — Ingresos</span>
       <span class="foot-label">MPL · SERIE ${window.HIST_RANGO || "2021–2025"}</span>
     </div>
   </div>`;
