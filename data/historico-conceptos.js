@@ -50,7 +50,7 @@ function crearBloqueHTML(numero, key, concepto) {
   </div>`;
 }
 
-function pintarChart(canvasId, años, valores, IDX_ACTUAL) {
+function pintarChart(canvasId, años, valores, IDX_ACTUAL, esAnual) {
   const canvas = document.getElementById(canvasId);
   if (!canvas) return;
 
@@ -64,7 +64,7 @@ function pintarChart(canvasId, años, valores, IDX_ACTUAL) {
   new Chart(canvas, {
     type: "bar",
     data: {
-      labels: años.map((a, i) => `Ene–Ago ${a}${i === IDX_ACTUAL ? " ★" : ""}`),
+      labels: años.map((a, i) => (esAnual ? `${a}` : `Ene–Ago ${a}`) + (i === IDX_ACTUAL ? " ★" : "")),
       datasets: [{
         data: valores,
         backgroundColor: colores,
@@ -134,8 +134,8 @@ function pintarBloque(key, concepto) {
   const valoresAnual  = años.map(a => concepto.anual[a] ?? null);
   const valoresEneAgo = años.map(a => concepto.eneago[a] ?? null);
 
-  pintarChart("chart-anual-" + key, años, valoresAnual, IDX_ACTUAL);
-  pintarChart("chart-eneago-" + key, años, valoresEneAgo, IDX_ACTUAL);
+  pintarChart("chart-anual-" + key, años, valoresAnual, IDX_ACTUAL, true);
+  pintarChart("chart-eneago-" + key, años, valoresEneAgo, IDX_ACTUAL, false);
 }
 
 async function initHistoricoConceptos() {
