@@ -15,7 +15,7 @@
     "2023": 73859,
     "2024": 100159,
     "2025": 93545,
-    "2026": 83608
+    "2026": 88518
   },
   "DERECHOS_CONSTRUCCION": {
     "label": "Derechos Admin. de Construcción",
@@ -24,7 +24,7 @@
     "2023": 91768,
     "2024": 76375,
     "2025": 110578,
-    "2026": 56276
+    "2026": 92937
   },
   "DERECHOS_TRANSPORTES_COMUNICACIONES": {
     "label": "Derechos Admin. de Transportes y Comunicaciones",
@@ -33,7 +33,7 @@
     "2023": 470904,
     "2024": 546349,
     "2025": 258864,
-    "2026": 568779
+    "2026": 597924
   },
   "DERECHOS_INDUSTRIA_COMERCIO": {
     "label": "Derechos Admin. de Industria y Comercio",
@@ -42,7 +42,7 @@
     "2023": 184822,
     "2024": 215566,
     "2025": 237283,
-    "2026": 157074
+    "2026": 167401
   },
   "OTROS_DERECHOS_ADMINISTRATIVOS": {
     "label": "Otros Derechos Administrativos",
@@ -51,7 +51,7 @@
     "2023": 149780,
     "2024": 336908,
     "2025": 204609,
-    "2026": 245280
+    "2026": 255137
   },
   "OTROS_INGRESOS_SERVICIOS": {
     "label": "Otros Ingresos por Prestación de Servicios",
@@ -60,7 +60,7 @@
     "2023": 732597,
     "2024": 933797,
     "2025": 1063051,
-    "2026": 852267
+    "2026": 255137
   },
   "INTERESES": {
     "label": "Intereses",
@@ -78,6 +78,6 @@
     "2023": 294028,
     "2024": 275520,
     "2025": 239572,
-    "2026": 105563
+    "2026": 110018
   }
 }
