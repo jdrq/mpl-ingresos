@@ -82,7 +82,7 @@ NOMBRES_ESPERADOS = [a["nombre"] for a in ARCHIVOS]
 # CLIC CON REINTENTO (polling + escalada a doble clic)
 # --------------------------------------------------------------------
 def clic_con_reintento(fl, page, rol=None, nombre=None, intentos=3,
-                        verificar=None, exacto=True, espera_verificacion=12):
+                        verificar=None, exacto=True, espera_verificacion=18):
     locator = fl.get_by_role(rol, name=nombre, exact=exacto)
     for intento in range(intentos):
         try:
@@ -138,7 +138,7 @@ def procesar_archivo(page, config):
 
     for etiqueta_boton, texto_fila in todos_los_pasos:
         clic_con_reintento(
-            fl, page, rol="button", nombre=etiqueta_boton, intentos=2,
+            fl, page, rol="button", nombre=etiqueta_boton, intentos=3,
             verificar=lambda tf=texto_fila: fl.get_by_role("cell", name=tf).first.is_visible()
         )
         time.sleep(1)
@@ -181,7 +181,7 @@ def procesar_archivo(page, config):
     # Último clic de la cadena, sin fila después (revela el desglose final)
     if config.get("boton_final_sin_fila"):
         clic_con_reintento(fl, page, rol="button",
-                            nombre=config["boton_final_sin_fila"], intentos=2)
+                            nombre=config["boton_final_sin_fila"], intentos=3)
 
     try:
         page.wait_for_load_state("networkidle", timeout=5000)
@@ -311,6 +311,7 @@ def main():
             try:
                 procesar_archivo(page, config)
                 exitosos.append(config["nombre"])
+                time.sleep(2)  # pequeño respiro entre archivos para el servidor MEF
             except Exception as e:
                 print(f"  [ERROR] {e}")
                 fallidos.append(config["nombre"])
