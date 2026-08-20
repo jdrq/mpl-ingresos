@@ -32,6 +32,8 @@ GORE Lambayeque (descargar_xls_mef.py, sesiones 13-14):
 
 from playwright.sync_api import sync_playwright
 import time
+import subprocess
+from datetime import datetime
 from pathlib import Path
 
 # --------------------------------------------------------------------
@@ -284,6 +286,58 @@ def procesar_archivo(page, config):
 
 
 # --------------------------------------------------------------------
+# GIT — commit + push automático (solo si 6/6 exitosos)
+# --------------------------------------------------------------------
+def git_push_automatico():
+    """
+    Ejecuta git add xlsrubro08/ → commit → push. Solo se llama si los 6
+    archivos se descargaron bien (todo o nada, mismo criterio que el
+    script diario). Nunca lanza excepción -- el fallo es informativo.
+    """
+    fecha_hoy = datetime.now().strftime("%d/%m/%Y")
+    mensaje = f"Descargar XLS Rubro 08 - {fecha_hoy}"
+
+    print("\n" + "=" * 60)
+    print("  GIT — Subiendo xlsrubro08/ a GitHub")
+    print("=" * 60)
+
+    pasos = [
+        ("git add",    ["git", "add", str(CARPETA_DESTINO)]),
+        ("git commit", ["git", "commit", "-m", mensaje]),
+        ("git push",   ["git", "push"]),
+    ]
+
+    for nombre_paso, cmd in pasos:
+        print(f"  → {nombre_paso}...", end=" ", flush=True)
+        resultado = subprocess.run(cmd, capture_output=True, text=True, encoding="utf-8")
+
+        if resultado.returncode == 0:
+            print("OK")
+            if nombre_paso == "git commit" and resultado.stdout.strip():
+                print(f"     {resultado.stdout.strip().splitlines()[0]}")
+        else:
+            salida = resultado.stdout + resultado.stderr
+            sin_cambios = (
+                "nothing to commit" in salida
+                or "nothing added to commit" in salida
+                or "no changes added to commit" in salida
+            )
+            if nombre_paso == "git commit" and sin_cambios:
+                print("sin cambios (los xls no cambiaron respecto al último commit)")
+                return
+            print("FALLÓ")
+            print(f"  [ERROR {nombre_paso}] {salida.strip() or 'sin detalle'}")
+            print("  ⚠ Sube manualmente si hace falta:")
+            print(f"     git add {CARPETA_DESTINO.as_posix()}/")
+            print(f'     git commit -m "{mensaje}"')
+            print("     git push")
+            return
+
+    print(f"\n  ✅ xlsrubro08/ subido a GitHub — commit: \"{mensaje}\"")
+    print("     Siguiente paso: python scripts/actualizar_json_rubro08.py")
+
+
+# --------------------------------------------------------------------
 # MAIN
 # --------------------------------------------------------------------
 def main():
@@ -333,8 +387,15 @@ def main():
         print(f"  ✗  {n}  ← revisar manualmente")
 
     print(f"\nArchivos guardados en: {CARPETA_DESTINO.resolve()}")
+
     if not fallidos:
-        print("Siguiente paso: python scripts/actualizar_json_rubro08.py")
+        git_push_automatico()
+    else:
+        print("\n" + "=" * 60)
+        print("  ⛔ GIT — NO SE SUBIÓ NADA AL REPOSITORIO")
+        print("=" * 60)
+        print(f"  {len(fallidos)} de {len(ARCHIVOS)} archivo(s) fallaron: {', '.join(fallidos)}")
+        print("  Corrige el/los archivo(s) marcado(s) y vuelve a ejecutar el script.")
 
 
 if __name__ == "__main__":
