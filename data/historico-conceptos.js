@@ -72,8 +72,7 @@ function pintarChart(canvasId, años, valores, IDX_ACTUAL, esAnual, corteLabel) 
       labels: años.map((a, i) => {
         const actual = i === IDX_ACTUAL;
         if (esAnual) return `${a}${actual ? " ★" : ""}`;
-        if (actual)  return "2026 (a la fecha) ★";
-        return `Ene–${corteLabel} ${a}`;
+        return `Ene–${corteLabel} ${a}${actual ? " ★" : ""}`;
       }),
       datasets: [{
         data: valores,

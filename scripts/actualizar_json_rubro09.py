@@ -8,7 +8,9 @@ y actualiza automáticamente el corte "hasta la fecha" (2026) en
 
 Mismo patrón que actualizar_json_rubro08.py: parseo con regex (sin
 pandas/lxml), muestra viejo vs nuevo, pide confirmación, y si confirmas
-hace git add + commit + push automático.
+hace git add + commit + push automático. Actualiza 'anual' y 'enesep'
+del año 2026 (campo renombrado desde 'eneago' el 01-sep-2026, cuando el
+corte histórico pasó de Ene-Ago a Ene-Sep).
 
 MODO DE USO (desde la raíz del repo):
     python scripts/actualizar_json_rubro09.py
@@ -168,7 +170,7 @@ def main():
             if valor_nuevo is None:
                 print(f"   ⚠️  No se encontró la fila esperada para {concepto} — se omite.")
                 continue
-            valor_viejo = data.get(concepto, {}).get("eneago", {}).get("2026")
+            valor_viejo = data.get(concepto, {}).get("enesep", {}).get("2026")
             label = data.get(concepto, {}).get("label", concepto)
             flecha = "→" if valor_viejo != valor_nuevo else "= (sin cambio)"
             print(f"   {label:45s} S/ {valor_viejo:>12,}  {flecha}  S/ {valor_nuevo:>12,}"
@@ -191,7 +193,7 @@ def main():
 
     for concepto, valor in cambios.items():
         data[concepto]["anual"]["2026"] = valor
-        data[concepto]["eneago"]["2026"] = valor
+        data[concepto]["enesep"]["2026"] = valor
 
     JSON_PATH.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
     print(f"\n✅ {JSON_PATH} actualizado con {len(cambios)} concepto(s).")
