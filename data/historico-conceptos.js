@@ -1,9 +1,13 @@
 // historico-conceptos.js
 // Renderizador genérico de bloques históricos por concepto.
-// Cada bloque muestra 2 gráficos: Comparación Anual y Comparación Ene-Ago.
+// Cada bloque muestra 2 gráficos: Comparación Anual y Comparación del corte YTD (Ene-Ago o Ene-Sep, según el rubro).
 // Se usa en historico-rubro08.html e historico-rubro09.html.
 // Config esperada en window.HIST_CONFIG:
 //   { jsonPath: "data/historico_conceptos_rubro08.json" }
+//
+// NOTA: el campo "enesep" (Ene-Sep) reemplaza a "eneago" (Ene-Ago) a medida que
+// cada rubro se actualiza. Este archivo soporta ambos a la vez para no romper
+// el rubro que todavía no se migra.
 
 // Números completos, sin abreviar a K/M — a pedido del jefe.
 const fmtM = n => {
@@ -13,6 +17,7 @@ const fmtM = n => {
 
 function crearBloqueHTML(numero, key, concepto) {
   const num = String(numero).padStart(2, "0");
+  const corteTxt = concepto.enesep ? "Enero–Septiembre" : "Enero–Agosto";
   return `
   <div class="bloque bloque-doble" id="bloque-${key}">
     <div class="bloque-header">
@@ -33,7 +38,7 @@ function crearBloqueHTML(numero, key, concepto) {
       </div>
       <div class="doble-col doble-col-right">
         <div class="bloque-subtitle">
-          <span class="bloque-subtitle-text">Comparación de Ingresos (Enero–Agosto)</span>
+          <span class="bloque-subtitle-text">Comparación de Ingresos (${corteTxt})</span>
           <span class="bloque-subtitle-date">${window.HIST_RANGO || "2021–2026"}</span>
         </div>
         <div class="bloque-body">
@@ -50,7 +55,7 @@ function crearBloqueHTML(numero, key, concepto) {
   </div>`;
 }
 
-function pintarChart(canvasId, años, valores, IDX_ACTUAL, esAnual) {
+function pintarChart(canvasId, años, valores, IDX_ACTUAL, esAnual, corteLabel) {
   const canvas = document.getElementById(canvasId);
   if (!canvas) return;
 
@@ -64,7 +69,12 @@ function pintarChart(canvasId, años, valores, IDX_ACTUAL, esAnual) {
   new Chart(canvas, {
     type: "bar",
     data: {
-      labels: años.map((a, i) => (esAnual ? `${a}` : `Ene–Ago ${a}`) + (i === IDX_ACTUAL ? " ★" : "")),
+      labels: años.map((a, i) => {
+        const actual = i === IDX_ACTUAL;
+        if (esAnual) return `${a}${actual ? " ★" : ""}`;
+        if (actual)  return "2026 (a la fecha) ★";
+        return `Ene–${corteLabel} ${a}`;
+      }),
       datasets: [{
         data: valores,
         backgroundColor: colores,
@@ -131,11 +141,14 @@ function pintarBloque(key, concepto) {
   const años = Object.keys(concepto.anual).filter(k => /^\d{4}$/.test(k)).sort();
   const IDX_ACTUAL = años.length - 1;
 
-  const valoresAnual  = años.map(a => concepto.anual[a] ?? null);
-  const valoresEneAgo = años.map(a => concepto.eneago[a] ?? null);
+  const corte      = concepto.enesep || concepto.eneago;
+  const corteLabel = concepto.enesep ? "Sep" : "Ago";
+
+  const valoresAnual = años.map(a => concepto.anual[a] ?? null);
+  const valoresCorte = años.map(a => corte[a] ?? null);
 
   pintarChart("chart-anual-" + key, años, valoresAnual, IDX_ACTUAL, true);
-  pintarChart("chart-eneago-" + key, años, valoresEneAgo, IDX_ACTUAL, false);
+  pintarChart("chart-eneago-" + key, años, valoresCorte, IDX_ACTUAL, false, corteLabel);
 }
 
 async function initHistoricoConceptos() {
