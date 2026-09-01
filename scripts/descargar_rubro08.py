@@ -17,9 +17,9 @@ para los 4 siguientes ("Target page, context or browser has been closed").
 
 Esta versión adopta el mismo patrón que ya funciona bien en el script de
 GORE Lambayeque (descargar_xls_mef.py, sesiones 13-14):
-  1. clic_con_reintento(): hace polling (hasta 12s, revisando cada 1s) en
+  1. clic_con_reintento(): hace polling (hasta 18s, revisando cada 1s) en
      vez de un solo chequeo temprano. Si el clic no surtió efecto, reintenta
-     - y desde el 2º intento escala a DOBLE clic.
+     hasta 3 veces - y desde el 2º intento escala a DOBLE clic.
   2. Checkpoint de fila: después de clickear una fila, confirma que su
      radio (input:checked) quedó realmente marcado antes de seguir. Si no
      se marca, reintenta hasta 3 veces.
@@ -168,7 +168,7 @@ def procesar_archivo(page, config):
     page.goto(URL_BASE)
     fl = page.frame_locator(FRAME_SELECTOR)
 
-    clic_con_reintento(fl, page, "cell", "TOTAL", intentos=2)
+    clic_con_reintento(fl, page, "cell", "TOTAL", intentos=3)
 
     todos_los_pasos = PASOS_MPL + config["pasos"]
 
@@ -198,7 +198,7 @@ def procesar_archivo(page, config):
                 pass
             time.sleep(1)
 
-            for _ in range(15):
+            for _ in range(18):
                 try:
                     fila = fl.locator(f"tr:has-text('{texto_fila}')").first
                     if fila.locator("input:checked").count() > 0:
@@ -242,7 +242,7 @@ def procesar_archivo(page, config):
     if config.get("boton_final_sin_fila"):
         ultimo_texto = todos_los_pasos[-1][1].rstrip(":")
         confirmado_final = False
-        for _ in range(15):
+        for _ in range(18):
             try:
                 breadcrumb = fl.locator(".History").inner_text(timeout=3000)
                 if ultimo_texto in breadcrumb:

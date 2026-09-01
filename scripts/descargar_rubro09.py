@@ -132,7 +132,7 @@ def procesar_archivo(page, config):
     page.goto(URL_BASE)
     fl = page.frame_locator(FRAME_SELECTOR)
 
-    clic_con_reintento(fl, page, "cell", "TOTAL", intentos=2)
+    clic_con_reintento(fl, page, "cell", "TOTAL", intentos=3)
 
     todos_los_pasos = PASOS_MPL + config["pasos"]
 
@@ -157,7 +157,7 @@ def procesar_archivo(page, config):
                 pass
             time.sleep(1)
 
-            for _ in range(15):
+            for _ in range(18):
                 try:
                     fila = fl.locator(f"tr:has-text('{texto_fila}')").first
                     if fila.locator("input:checked").count() > 0:
@@ -196,7 +196,7 @@ def procesar_archivo(page, config):
     if config.get("boton_final_sin_fila"):
         ultimo_texto = todos_los_pasos[-1][1].rstrip(":")
         confirmado_final = False
-        for _ in range(15):
+        for _ in range(18):
             try:
                 breadcrumb = fl.locator(".History").inner_text(timeout=3000)
                 if ultimo_texto in breadcrumb:

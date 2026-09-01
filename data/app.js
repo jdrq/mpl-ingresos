@@ -585,8 +585,6 @@ function renderB6() {
 
   const fmtM = n => {
     if (!n) return "S/ —";
-    if (n >= 1e6) return "S/ " + (n / 1e6).toLocaleString("es-PE",
-                    { minimumFractionDigits: 1, maximumFractionDigits: 1 }) + " M";
     return "S/ " + Math.round(n).toLocaleString("es-PE");
   };
 
@@ -666,11 +664,7 @@ function renderB6() {
         y: {
           beginAtZero: false,
           ticks: {
-            callback: v => {
-              if (v >= 1e6) return "S/ " + (v / 1e6).toFixed(1) + " M";
-              if (v >= 1e3) return "S/ " + (v / 1e3).toFixed(0) + " K";
-              return "S/ " + v;
-            },
+            callback: v => "S/ " + Math.round(v).toLocaleString("es-PE"),
             font: { family: "'Barlow'", size: 11 },
             color: "#6b7280"
           },
@@ -688,8 +682,7 @@ function renderB6() {
           if (!value) return;
           const meta = chart.getDatasetMeta(0);
           const bar  = meta.data[i];
-          const txt  = "S/ " + (value / 1e6).toLocaleString("es-PE",
-                         { minimumFractionDigits: 1, maximumFractionDigits: 1 }) + " M";
+          const txt  = fmtM(value);
           // FIX: usar IDX_2026 en lugar de 4 hardcodeado
           ctx.fillStyle    = i === IDX_2026 ? "#92400e" : "#7a1219";
           ctx.font         = "700 12px 'Barlow Condensed'";
@@ -804,10 +797,6 @@ function renderB7() {
 
   const fmtM = n => {
     if (!n) return "S/ —";
-    if (n >= 1e6) return "S/ " + (n / 1e6).toLocaleString("es-PE",
-                    { minimumFractionDigits: 1, maximumFractionDigits: 1 }) + " M";
-    if (n >= 1e3) return "S/ " + (n / 1e3).toLocaleString("es-PE",
-                    { minimumFractionDigits: 0, maximumFractionDigits: 0 }) + " K";
     return "S/ " + Math.round(n).toLocaleString("es-PE");
   };
 
@@ -880,11 +869,7 @@ function renderB7() {
         y: {
           beginAtZero: false,
           ticks: {
-            callback: v => {
-              if (v >= 1e6) return "S/ " + (v / 1e6).toFixed(1) + " M";
-              if (v >= 1e3) return "S/ " + (v / 1e3).toFixed(0) + " K";
-              return "S/ " + v;
-            },
+            callback: v => "S/ " + Math.round(v).toLocaleString("es-PE"),
             font: { family: "'Barlow'", size: 11 },
             color: "#6b7280"
           },
@@ -949,10 +934,6 @@ function renderB8() {
 
   const fmtM = n => {
     if (!n) return "S/ —";
-    if (n >= 1e6) return "S/ " + (n / 1e6).toLocaleString("es-PE",
-                    { minimumFractionDigits: 1, maximumFractionDigits: 1 }) + " M";
-    if (n >= 1e3) return "S/ " + (n / 1e3).toLocaleString("es-PE",
-                    { minimumFractionDigits: 0, maximumFractionDigits: 0 }) + " K";
     return "S/ " + Math.round(n).toLocaleString("es-PE");
   };
 
@@ -1025,11 +1006,7 @@ function renderB8() {
         y: {
           beginAtZero: false,
           ticks: {
-            callback: v => {
-              if (v >= 1e6) return "S/ " + (v / 1e6).toFixed(1) + " M";
-              if (v >= 1e3) return "S/ " + (v / 1e3).toFixed(0) + " K";
-              return "S/ " + v;
-            },
+            callback: v => "S/ " + Math.round(v).toLocaleString("es-PE"),
             font: { family: "'Barlow'", size: 11 },
             color: "#6b7280"
           },
