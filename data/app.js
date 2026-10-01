@@ -1,5 +1,8 @@
 const $ = id => document.getElementById(id);
 
+// Etiqueta del corte histórico de B6, B7 y B8. ÚNICO lugar a cambiar cada mes.
+const CORTE_LABEL = "Ene–Oct";
+
 const fmt  = n => Math.round(n || 0).toLocaleString("es-PE");
 const fmtS = n => "S/ " + fmt(n);
 
@@ -605,7 +608,7 @@ function renderB6() {
       return `<div style="background:${es2026 ? "#fef3c7" : "#f9fafb"};border:1px solid ${es2026 ? "#fbbf24" : "#e5e7eb"};
                border-radius:10px;padding:10px 16px;min-width:110px;flex:1;text-align:center">
         <div style="font-family:'Barlow Condensed';font-size:13px;font-weight:700;color:#6b7280;margin-bottom:3px">
-          ${es2026 ? "2026 (a la fecha) ★" : "Ene–Sep " + a}
+          ${es2026 ? "2026 (a la fecha) ★" : CORTE_LABEL + " " + a}
         </div>
         <div style="font-family:'Barlow Condensed';font-size:18px;font-weight:800;color:${es2026 ? "#92400e" : "#1f2937"}">
           ${v ? fmtM(v) : "Cargando…"}
@@ -626,7 +629,7 @@ function renderB6() {
   b6ChartInstance = new Chart(canvas, {
     type: "bar",
     data: {
-      labels: años.map(a => a === 2026 ? "2026 (a la fecha) ★" : `Ene–Sep ${a}`),
+      labels: años.map(a => a === 2026 ? "2026 (a la fecha) ★" : `${CORTE_LABEL} ${a}`),
       datasets: [{
         label: "Recaudado",
         data: valores,
@@ -815,8 +818,8 @@ function renderB7() {
         deltaHtml = `<span style="font-size:10px;color:${color};font-weight:700">${signo} ${Math.abs(pct).toFixed(1)}%</span>`;
       }
       return `<div style="background:${es2026 ? "#fef3c7" : "#f9fafb"};border:1px solid ${es2026 ? "#fbbf24" : "#e5e7eb"};border-radius:10px;padding:10px 16px;min-width:110px;flex:1;text-align:center">
-        <div style="font-family:'Barlow Condensed';font-size:13px;font-weight:700;color:#6b7280;margin-bottom:3px">${es2026 ? "2026 (a la fecha) \u2605" : "Ene\u2013Sep " + a}</div>
-        <div style="font-family:'Barlow Condensed';font-size:18px;font-weight:800;color:${es2026 ? "#92400e" : "#1f2937"}">${v ? fmtM(v) : "Cargando\u2026"}</div>
+        <div style="font-family:'Barlow Condensed';font-size:13px;font-weight:700;color:#6b7280;margin-bottom:3px">${es2026 ? "2026 (a la fecha) ★" : CORTE_LABEL + " " + a}</div>
+        <div style="font-family:'Barlow Condensed';font-size:18px;font-weight:800;color:${es2026 ? "#92400e" : "#1f2937"}">${v ? fmtM(v) : "Cargando…"}</div>
         <div style="margin-top:3px">${deltaHtml}</div>
       </div>`;
     }).join("");
@@ -832,7 +835,7 @@ function renderB7() {
   b7ChartInstance = new Chart(canvas, {
     type: "bar",
     data: {
-      labels: años.map(a => a === 2026 ? "2026 (a la fecha) \u2605" : `Ene\u2013Sep ${a}`),
+      labels: años.map(a => a === 2026 ? "2026 (a la fecha) ★" : `${CORTE_LABEL} ${a}`),
       datasets: [{
         label: "Recaudado Rubro 08",
         data: valores,
@@ -952,8 +955,8 @@ function renderB8() {
         deltaHtml = `<span style="font-size:10px;color:${color};font-weight:700">${signo} ${Math.abs(pct).toFixed(1)}%</span>`;
       }
       return `<div style="background:${es2026 ? "#fef3c7" : "#f9fafb"};border:1px solid ${es2026 ? "#fbbf24" : "#e5e7eb"};border-radius:10px;padding:10px 16px;min-width:110px;flex:1;text-align:center">
-        <div style="font-family:'Barlow Condensed';font-size:13px;font-weight:700;color:#6b7280;margin-bottom:3px">${es2026 ? "2026 (a la fecha) \u2605" : "Ene\u2013Sep " + a}</div>
-        <div style="font-family:'Barlow Condensed';font-size:18px;font-weight:800;color:${es2026 ? "#92400e" : "#1f2937"}">${v ? fmtM(v) : "Cargando\u2026"}</div>
+        <div style="font-family:'Barlow Condensed';font-size:13px;font-weight:700;color:#6b7280;margin-bottom:3px">${es2026 ? "2026 (a la fecha) ★" : CORTE_LABEL + " " + a}</div>
+        <div style="font-family:'Barlow Condensed';font-size:18px;font-weight:800;color:${es2026 ? "#92400e" : "#1f2937"}">${v ? fmtM(v) : "Cargando…"}</div>
         <div style="margin-top:3px">${deltaHtml}</div>
       </div>`;
     }).join("");
@@ -969,7 +972,7 @@ function renderB8() {
   b8ChartInstance = new Chart(canvas, {
     type: "bar",
     data: {
-      labels: años.map(a => a === 2026 ? "2026 (a la fecha) \u2605" : `Ene\u2013Sep ${a}`),
+      labels: años.map(a => a === 2026 ? "2026 (a la fecha) ★" : `${CORTE_LABEL} ${a}`),
       datasets: [{
         label: "Recaudado Rubro 09",
         data: valores,
