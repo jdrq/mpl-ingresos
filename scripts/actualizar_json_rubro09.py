@@ -8,9 +8,13 @@ y actualiza automáticamente el corte "hasta la fecha" (2026) en
 
 Mismo patrón que actualizar_json_rubro08.py: parseo con regex (sin
 pandas/lxml), muestra viejo vs nuevo, pide confirmación, y si confirmas
-hace git add + commit + push automático. Actualiza 'anual' y 'enesep'
-del año 2026 (campo renombrado desde 'eneago' el 01-sep-2026, cuando el
-corte histórico pasó de Ene-Ago a Ene-Sep).
+hace git add + commit + push automático. Actualiza 'anual' y el campo de
+corte (CAMPO_CORTE) del año 2026.
+
+CAMPO DE CORTE: el nombre del campo indica el mes del corte histórico
+(eneago -> Ene-Ago, enesep -> Ene-Sep, eneoct -> Ene-Oct). Pasó de 'enesep' a
+'eneoct' el 01-oct-2026. El próximo mes se cambia SOLO la constante CAMPO_CORTE
+(y se renombra el mismo campo en el JSON).
 
 MODO DE USO (desde la raíz del repo):
     python scripts/actualizar_json_rubro09.py
@@ -38,6 +42,9 @@ from pathlib import Path
 
 CARPETA_RUBRO09 = Path("xlsrubro09")
 JSON_PATH       = Path("data") / "historico_conceptos_rubro09.json"
+
+# Campo del JSON que guarda el corte "Ene-<mes>". ÚNICO lugar a cambiar cada mes.
+CAMPO_CORTE = "eneoct"
 
 
 def leer_filas(archivo):
@@ -151,6 +158,7 @@ def main():
     print("=" * 60)
     print("  Actualizar corte 2026 — Rubro 09")
     print(f"  Leyendo desde: {CARPETA_RUBRO09.resolve()}")
+    print(f"  Campo de corte: '{CAMPO_CORTE}'")
     print("=" * 60)
 
     cambios = {}
@@ -170,7 +178,7 @@ def main():
             if valor_nuevo is None:
                 print(f"   ⚠️  No se encontró la fila esperada para {concepto} — se omite.")
                 continue
-            valor_viejo = data.get(concepto, {}).get("enesep", {}).get("2026")
+            valor_viejo = data.get(concepto, {}).get(CAMPO_CORTE, {}).get("2026")
             label = data.get(concepto, {}).get("label", concepto)
             flecha = "→" if valor_viejo != valor_nuevo else "= (sin cambio)"
             print(f"   {label:45s} S/ {valor_viejo:>12,}  {flecha}  S/ {valor_nuevo:>12,}"
@@ -193,7 +201,7 @@ def main():
 
     for concepto, valor in cambios.items():
         data[concepto]["anual"]["2026"] = valor
-        data[concepto]["enesep"]["2026"] = valor
+        data[concepto].setdefault(CAMPO_CORTE, {})["2026"] = valor
 
     JSON_PATH.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
     print(f"\n✅ {JSON_PATH} actualizado con {len(cambios)} concepto(s).")

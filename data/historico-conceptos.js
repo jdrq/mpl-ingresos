@@ -1,13 +1,14 @@
 // historico-conceptos.js
 // Renderizador genérico de bloques históricos por concepto.
-// Cada bloque muestra 2 gráficos: Comparación Anual y Comparación del corte YTD (Ene-Ago o Ene-Sep, según el rubro).
+// Cada bloque muestra 2 gráficos: Comparación Anual y Comparación del corte YTD (Ene–<mes>).
 // Se usa en historico-rubro08.html e historico-rubro09.html.
 // Config esperada en window.HIST_CONFIG:
 //   { jsonPath: "data/historico_conceptos_rubro08.json" }
 //
-// NOTA: el campo "enesep" (Ene-Sep) reemplaza a "eneago" (Ene-Ago) a medida que
-// cada rubro se actualiza. Este archivo soporta ambos a la vez para no romper
-// el rubro que todavía no se migra.
+// NOTA SOBRE EL CORTE: el mes del corte se deduce del NOMBRE del campo del JSON
+// (eneago, enesep, eneoct, enenov, enedic). Para pasar al mes siguiente basta con
+// renombrar ese campo en el JSON — este archivo no necesita cambios. Si un rubro
+// todavía no se migra, sigue funcionando con su campo anterior.
 
 // Números completos, sin abreviar a K/M — a pedido del jefe.
 const fmtM = n => {
@@ -15,9 +16,26 @@ const fmtM = n => {
   return "S/ " + Math.round(n).toLocaleString("es-PE");
 };
 
+// Meses de corte soportados. El orden va del más reciente al más antiguo:
+// si un concepto trajera dos campos, se usa el más reciente.
+const CORTES = [
+  { campo: "enedic", corte: "Diciembre",  label: "Dic" },
+  { campo: "enenov", corte: "Noviembre",  label: "Nov" },
+  { campo: "eneoct", corte: "Octubre",    label: "Oct" },
+  { campo: "enesep", corte: "Septiembre", label: "Sep" },
+  { campo: "eneago", corte: "Agosto",     label: "Ago" },
+];
+
+// Devuelve { datos, corteTxt, corteLabel } para un concepto.
+function detectarCorte(concepto) {
+  const c = CORTES.find(x => concepto[x.campo]);
+  if (!c) return { datos: {}, corteTxt: "", corteLabel: "" };
+  return { datos: concepto[c.campo], corteTxt: "Enero–" + c.corte, corteLabel: c.label };
+}
+
 function crearBloqueHTML(numero, key, concepto) {
   const num = String(numero).padStart(2, "0");
-  const corteTxt = concepto.enesep ? "Enero–Septiembre" : "Enero–Agosto";
+  const corteTxt = detectarCorte(concepto).corteTxt;
   return `
   <div class="bloque bloque-doble" id="bloque-${key}">
     <div class="bloque-header">
@@ -140,8 +158,7 @@ function pintarBloque(key, concepto) {
   const años = Object.keys(concepto.anual).filter(k => /^\d{4}$/.test(k)).sort();
   const IDX_ACTUAL = años.length - 1;
 
-  const corte      = concepto.enesep || concepto.eneago;
-  const corteLabel = concepto.enesep ? "Sep" : "Ago";
+  const { datos: corte, corteLabel } = detectarCorte(concepto);
 
   const valoresAnual = años.map(a => concepto.anual[a] ?? null);
   const valoresCorte = años.map(a => corte[a] ?? null);
