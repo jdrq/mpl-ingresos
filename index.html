@@ -421,33 +421,50 @@ main{padding:28px 0 60px}
     </div>
   </div>
 
-  <!-- BLOQUE 2 — FUENTE -->
-  <div class="bloque">
+  <!-- BLOQUE 2 — RANKING (comparativo por año + gráfico lineal) -->
+  <div class="bloque" id="b5bloque">
     <div class="bloque-header">
       <div class="bloque-num">02</div>
-      <div class="bloque-titulo">EJECUCIÓN POR FUENTE DE FINANCIAMIENTO</div>
+      <div class="bloque-titulo">RANKING DE MUNICIPALIDADES — DPTO. LAMBAYEQUE</div>
     </div>
     <div class="bloque-subtitle">
-      <span class="bloque-subtitle-text">Clasificación por fuente de financiamiento del ingreso</span>
-      <span class="bloque-subtitle-date" id="b2fecha">2026</span>
+      <span class="bloque-subtitle-text">Comparativo entre municipalidades del departamento</span>
+      <span class="bloque-subtitle-date" id="b5meta">38 municipalidades · 2026</span>
     </div>
     <div class="bloque-body">
-      <div id="b2donawrap" style="display:none;gap:12px;flex-wrap:wrap;margin-bottom:20px;justify-content:center;align-items:flex-start"></div>
+      <div class="b5-controles">
+        <span class="ctl-label">Año</span>
+        <div class="tabs" id="b5tabs" role="group" aria-label="Año de comparación"></div>
+        <span class="ctl-label" style="margin-left:auto">Ordenar por</span>
+        <div class="orden" role="group" aria-label="Criterio de orden">
+          <button type="button" id="b5ordMonto" aria-pressed="true">Monto recaudado</button>
+          <button type="button" id="b5ordPct" aria-pressed="false">% de avance</button>
+        </div>
+      </div>
       <div class="tbl-wrap">
         <table class="pdf-table">
           <thead><tr>
-            <th class="left" style="min-width:280px">Fuente de Financiamiento</th>
+            <th style="width:44px;text-align:center">#</th>
+            <th class="left" style="min-width:280px">Municipalidad</th>
             <th class="num">PIA (S/)</th>
             <th class="num">PIM (S/)</th>
-            <th class="num">Recaudado (S/)</th>
-            <th class="num">Pendiente (S/)</th>
-            <th class="num" style="min-width:160px">% Recaudación</th>
+            <th class="num" id="b5thRec">Recaudado Ene–Oct (S/)</th>
+            <th class="num" style="min-width:160px">% de avance (Rec. / PIM)</th>
           </tr></thead>
-          <tbody id="b2tbody"><tr><td colspan="6" class="vacio">Carga fuente.xls para ver los datos.</td></tr></tbody>
-          <tfoot id="b2tfoot"></tfoot>
+          <tbody id="b5tbody"><tr><td colspan="6" class="vacio">Carga ranking.xls para ver los datos.</td></tr></tbody>
+          <tfoot id="b5tfoot"></tfoot>
         </table>
       </div>
-      <div class="nota-bloque" id="b2nota" style="display:none"></div>
+
+      <div class="b5-linea">
+        <div class="b5-linea-head">
+          <span class="b5-linea-titulo">Gráfico lineal — Recaudado Ene–Oct por año</span>
+          <span class="bloque-subtitle-date" id="b5lineaMeta">—</span>
+        </div>
+        <div style="position:relative;height:360px;background:#fff;border-radius:10px;padding:8px 0 0 0">
+          <canvas id="b5chart"></canvas>
+        </div>
+      </div>
     </div>
     <div class="bloque-footer">
       <span>Fuente: Consulta Amigable MEF — Ingresos</span>
@@ -525,50 +542,33 @@ main{padding:28px 0 60px}
     </div>
   </div>
 
-  <!-- BLOQUE 5 — RANKING (comparativo por año + gráfico lineal) -->
-  <div class="bloque" id="b5bloque">
+  <!-- BLOQUE 5 — FUENTE -->
+  <div class="bloque">
     <div class="bloque-header">
       <div class="bloque-num">05</div>
-      <div class="bloque-titulo">RANKING DE MUNICIPALIDADES — DPTO. LAMBAYEQUE</div>
+      <div class="bloque-titulo">EJECUCIÓN POR FUENTE DE FINANCIAMIENTO</div>
     </div>
     <div class="bloque-subtitle">
-      <span class="bloque-subtitle-text">Comparativo entre municipalidades del departamento</span>
-      <span class="bloque-subtitle-date" id="b5meta">38 municipalidades · 2026</span>
+      <span class="bloque-subtitle-text">Clasificación por fuente de financiamiento del ingreso</span>
+      <span class="bloque-subtitle-date" id="b2fecha">2026</span>
     </div>
     <div class="bloque-body">
-      <div class="b5-controles">
-        <span class="ctl-label">Año</span>
-        <div class="tabs" id="b5tabs" role="group" aria-label="Año de comparación"></div>
-        <span class="ctl-label" style="margin-left:auto">Ordenar por</span>
-        <div class="orden" role="group" aria-label="Criterio de orden">
-          <button type="button" id="b5ordMonto" aria-pressed="true">Monto recaudado</button>
-          <button type="button" id="b5ordPct" aria-pressed="false">% de avance</button>
-        </div>
-      </div>
+      <div id="b2donawrap" style="display:none;gap:12px;flex-wrap:wrap;margin-bottom:20px;justify-content:center;align-items:flex-start"></div>
       <div class="tbl-wrap">
         <table class="pdf-table">
           <thead><tr>
-            <th style="width:44px;text-align:center">#</th>
-            <th class="left" style="min-width:280px">Municipalidad</th>
+            <th class="left" style="min-width:280px">Fuente de Financiamiento</th>
             <th class="num">PIA (S/)</th>
             <th class="num">PIM (S/)</th>
-            <th class="num" id="b5thRec">Recaudado Ene–Oct (S/)</th>
-            <th class="num" style="min-width:160px">% de avance (Rec. / PIM)</th>
+            <th class="num">Recaudado (S/)</th>
+            <th class="num">Pendiente (S/)</th>
+            <th class="num" style="min-width:160px">% Recaudación</th>
           </tr></thead>
-          <tbody id="b5tbody"><tr><td colspan="6" class="vacio">Carga ranking.xls para ver los datos.</td></tr></tbody>
-          <tfoot id="b5tfoot"></tfoot>
+          <tbody id="b2tbody"><tr><td colspan="6" class="vacio">Carga fuente.xls para ver los datos.</td></tr></tbody>
+          <tfoot id="b2tfoot"></tfoot>
         </table>
       </div>
-
-      <div class="b5-linea">
-        <div class="b5-linea-head">
-          <span class="b5-linea-titulo">Gráfico lineal — Recaudado Ene–Oct por año</span>
-          <span class="bloque-subtitle-date" id="b5lineaMeta">—</span>
-        </div>
-        <div style="position:relative;height:360px;background:#fff;border-radius:10px;padding:8px 0 0 0">
-          <canvas id="b5chart"></canvas>
-        </div>
-      </div>
+      <div class="nota-bloque" id="b2nota" style="display:none"></div>
     </div>
     <div class="bloque-footer">
       <span>Fuente: Consulta Amigable MEF — Ingresos</span>
@@ -576,32 +576,10 @@ main{padding:28px 0 60px}
     </div>
   </div>
 
-  <!-- BLOQUE 6 — COMPARATIVO HISTÓRICO ENE–OCT -->
-  <div class="bloque" id="b6bloque">
-    <div class="bloque-header">
-      <div class="bloque-num">06</div>
-      <div class="bloque-titulo">COMPARATIVO HISTÓRICO — RECAUDADO ENE–OCT (2020–2026)</div>
-    </div>
-    <div class="bloque-subtitle">
-      <span class="bloque-subtitle-text">Serie histórica comparativa por año</span>
-      <span class="bloque-subtitle-date" id="b6fecha">2026</span>
-    </div>
-    <div class="bloque-body">
-      <div id="b6kpis" style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:20px"></div>
-      <div style="position:relative;height:320px;background:#fff;border-radius:10px;padding:8px 0 0 0">
-        <canvas id="b6chart"></canvas>
-      </div>
-    </div>
-    <div class="bloque-footer">
-      <span>Fuente: Consulta Amigable MEF — Ingresos</span>
-      <span class="foot-label">MPL · INGRESOS 2026</span>
-    </div>
-  </div>
-
-  <!-- BLOQUE 7 — COMPARATIVO HISTÓRICO RUBRO 08 -->
+  <!-- BLOQUE 6 — COMPARATIVO HISTÓRICO RUBRO 08 -->
   <div class="bloque" id="b7bloque">
     <div class="bloque-header">
-      <div class="bloque-num">07</div>
+      <div class="bloque-num">06</div>
       <div class="bloque-titulo">IMPUESTOS MUNICIPALES (RUBRO 08) — RECAUDADO ENE–OCT (2021–2026)</div>
     </div>
     <div class="bloque-subtitle">
@@ -621,10 +599,10 @@ main{padding:28px 0 60px}
   </div>
 
 
-  <!-- BLOQUE 8 — COMPARATIVO HISTÓRICO RUBRO 09 -->
+  <!-- BLOQUE 7 — COMPARATIVO HISTÓRICO RUBRO 09 -->
   <div class="bloque" id="b8bloque">
     <div class="bloque-header">
-      <div class="bloque-num">08</div>
+      <div class="bloque-num">07</div>
       <div class="bloque-titulo">RECURSOS DIRECTAMENTE RECAUDADOS (RUBRO 09) — RECAUDADO ENE–OCT (2021–2026)</div>
     </div>
     <div class="bloque-subtitle">
