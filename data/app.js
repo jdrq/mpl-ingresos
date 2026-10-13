@@ -28,11 +28,11 @@ function colorSem(pct) {
   return "var(--rojo-s)";
 }
 
-function barraHTML(pct) {
+function barraHTML(pct, colorFijo) {
   if (pct === null) {
     return '<span style="font-family:\'Barlow Condensed\';font-weight:700;color:#888;font-size:13px">N/A</span>';
   }
-  const col = colorSem(pct);
+  const col = colorFijo || colorSem(pct);
   const w   = Math.min(100, pct).toFixed(1);
   return `<div class="av-wrap">
     <div class="av-bar"><span style="width:${w}%;background:${col}"></span></div>
@@ -502,7 +502,8 @@ function renderB4() {
 // ═══════════════════════════════════════════════════════════════
 const MPL_ID      = "140301-301238";   // ubigeo-ejecutora de la Municipalidad Provincial de Lambayeque
 const ANIO_ACTUAL = 2026;
-let B5_HIST = null, b5Anio = ANIO_ACTUAL, b5Orden = "monto", b5Muni = MPL_ID;
+let B5_HIST = null, b5Anio = ANIO_ACTUAL, b5Orden = "monto";
+const b5Muni = MPL_ID;   // el gráfico lineal es solo de la Municipalidad Provincial de Lambayeque
 let b5ChartInstance = null, b5Listo = false;
 
 fetch("data/historico_ranking.json?" + Date.now())
@@ -534,15 +535,6 @@ function b5Init() {
   };
   $("b5ordMonto").addEventListener("click", () => setOrden("monto"));
   $("b5ordPct").addEventListener("click", () => setOrden("pct"));
-
-  const ids = Object.keys(B5_HIST.municipalidades).sort((a, b) => {
-    if (a === MPL_ID) return -1; if (b === MPL_ID) return 1;
-    return B5_HIST.municipalidades[a].localeCompare(B5_HIST.municipalidades[b], "es");
-  });
-  $("b5selMuni").innerHTML = ids.map(k =>
-    `<option value="${k}">${B5_HIST.municipalidades[k].replace(/^MUNICIPALIDAD\s+/i, "Municipalidad ")}</option>`).join("");
-  $("b5selMuni").value = MPL_ID;
-  $("b5selMuni").addEventListener("change", function () { b5Muni = this.value; renderB5Linea(); });
 }
 
 // Filas del ranking para un año. Los nombres salen del JSON (el .xls pierde la Ñ al leerlo con SheetJS).
@@ -566,11 +558,10 @@ function b5Filas(anio) {
 }
 
 function renderB5() {
-  const tbody = $("b5tbody"), hl = $("b5highlight");
+  const tbody = $("b5tbody");
   const filas = b5Filas(b5Anio);
   if (!filas) {
     tbody.innerHTML = '<tr><td colspan="6" class="vacio">Carga ranking.xls para ver los datos.</td></tr>';
-    hl.textContent = "Carga ranking.xls para ver la posición de la Municipalidad Provincial de Lambayeque.";
     $("b5tfoot").innerHTML = "";
     return;
   }
@@ -582,27 +573,16 @@ function renderB5() {
   $("b5thRec").textContent = `Recaudado ${CORTE_LABEL} (S/)`;
   $("b5meta").textContent  = `${filas.length} municipalidades · ordenado por ${b5Orden === "monto" ? "monto recaudado" : "% de avance"} · ${CORTE_LABEL} ${b5Anio}${enCurso ? " (a la fecha)" : ""}`;
 
-  const mpl = filas.find(f => f.esMPL);
-  if (mpl) {
-    const pm = porMonto.indexOf(mpl) + 1, pp = porPct.indexOf(mpl) + 1;
-    const pctStr = mpl.pct !== null ? mpl.pct.toFixed(1) + "%" : "N/A";
-    hl.innerHTML =
-      `&#128269; En <strong>${b5Anio}</strong>, la <strong>Municipalidad Provincial de Lambayeque</strong> recaudó
-       <strong>${fmtS(mpl.rec)}</strong> de enero a octubre${enCurso ? " (a la fecha)" : ""}: puesto
-       <strong>${pm}° de ${filas.length}</strong> por <strong>monto recaudado</strong> y puesto
-       <strong>${pp}° de ${filas.length}</strong> por <strong>% de avance</strong> sobre PIM (${pctStr}).`;
-  }
-
   tbody.innerHTML = lista.map((m, i) => {
     const pos      = i + 1;
-    const posStyle = pos <= 3 ? 'style="color:var(--dorado-osc);font-weight:800"' : 'style="font-weight:700"';
+    const posStyle = (pos <= 3 && !m.esMPL) ? 'style="color:var(--dorado-osc);font-weight:800"' : 'style="font-weight:700"';
     return `<tr ${m.esMPL ? 'class="mpl-row"' : ""}>
       <td style="text-align:center" ${posStyle}>${pos}°</td>
       <td style="font-weight:700">${m.nombre}</td>
       <td class="num">${fmtS(m.pia)}</td>
       <td class="num">${fmtS(m.pim)}</td>
       <td class="num">${fmtS(m.rec)}</td>
-      <td>${barraHTML(m.pct)}</td>
+      <td>${barraHTML(m.pct, m.esMPL ? "var(--rojo-osc)" : null)}</td>
     </tr>`;
   }).join("");
 
@@ -611,14 +591,6 @@ function renderB5() {
   $("b5tfoot").innerHTML = `<tr><td></td><td>TOTAL DPTO. LAMBAYEQUE (${filas.length} MUNICIPALIDADES)</td>
     <td class="num">${fmtS(tPia)}</td><td class="num">${fmtS(tPim)}</td><td class="num">${fmtS(tRec)}</td>
     <td>${barraHTML(tPim > 0 ? tRec / tPim * 100 : null)}</td></tr>`;
-
-  const nota = $("b5nota");
-  nota.style.display = "";
-  nota.innerHTML = `<strong>Cómo leer el % de avance:</strong> es el recaudado acumulado de enero a octubre dividido entre el PIM. ` +
-    (enCurso ? `En ${b5Anio} el PIM es el <strong>vigente a la fecha</strong>. `
-             : `En ${b5Anio} el PIM es el <strong>PIM final del año</strong> (a diciembre), mientras que el recaudado es solo de enero a octubre. `) +
-    `Por eso el % entre años es una referencia comparativa, no una ejecución anual. Un avance mayor a 100% ocurre cuando una municipalidad ` +
-    `recauda más de lo que su PIM contempla. Una diferencia de S/ 1 a S/ 3 entre la suma de filas y el total del portal MEF es redondeo del sistema.`;
 
   renderB5Linea();
 }

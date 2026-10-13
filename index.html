@@ -219,7 +219,9 @@ main{padding:28px 0 60px}
                 padding:10px 16px;font-size:13px;font-weight:500;color:var(--oscuro);
                 margin-bottom:14px;line-height:1.6}
 .rank-highlight strong{color:var(--rojo-osc)}
-.mpl-row td{background:#fef9ec !important;font-weight:700}
+/* Fila de la MPL: fondo dorado claro, texto rojo oscuro y franja dorada al borde izquierdo */
+.mpl-row td{background:#fdeeb5 !important;color:var(--rojo-osc) !important;font-weight:800}
+.mpl-row td:first-child{border-left:6px solid var(--dorado)}
 
 /* ── BLOQUE 5: pestañas de año, orden y gráfico lineal ── */
 .b5-controles{display:flex;align-items:center;gap:10px 18px;flex-wrap:wrap;margin-bottom:16px}
@@ -243,10 +245,6 @@ main{padding:28px 0 60px}
 .b5-linea-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:12px}
 .b5-linea-titulo{font-family:"Barlow Condensed";font-weight:800;font-size:15px;letter-spacing:.05em;
                  text-transform:uppercase;color:var(--rojo-osc)}
-.b5-linea-sel{display:flex;align-items:center;gap:8px;font-family:"Barlow Condensed";font-weight:700;
-              font-size:12px;letter-spacing:.05em;text-transform:uppercase;color:var(--texto-mut)}
-.sel-muni{font-family:"Barlow";font-weight:600;font-size:13px;padding:6px 10px;border:1.5px solid var(--linea);
-          border-radius:8px;background:#fff;color:var(--texto);max-width:360px}
 
 /* ── VACÍO ── */
 .vacio{padding:36px;text-align:center;color:#aaa;font-size:13px;font-weight:400}
@@ -547,9 +545,6 @@ main{padding:28px 0 60px}
           <button type="button" id="b5ordPct" aria-pressed="false">% de avance</button>
         </div>
       </div>
-      <div class="rank-highlight" id="b5highlight">
-        Carga ranking.xls para ver la posición de la Municipalidad Provincial de Lambayeque.
-      </div>
       <div class="tbl-wrap">
         <table class="pdf-table">
           <thead><tr>
@@ -564,15 +559,10 @@ main{padding:28px 0 60px}
           <tfoot id="b5tfoot"></tfoot>
         </table>
       </div>
-      <div class="nota-bloque" id="b5nota" style="display:none"></div>
 
       <div class="b5-linea">
         <div class="b5-linea-head">
           <span class="b5-linea-titulo">Gráfico lineal — Recaudado Ene–Oct por año</span>
-          <span class="b5-linea-sel">
-            <label for="b5selMuni">Municipalidad:</label>
-            <select class="sel-muni" id="b5selMuni"></select>
-          </span>
           <span class="bloque-subtitle-date" id="b5lineaMeta">—</span>
         </div>
         <div style="position:relative;height:360px;background:#fff;border-radius:10px;padding:8px 0 0 0">
