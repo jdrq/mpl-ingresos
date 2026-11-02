@@ -1,7 +1,8 @@
 const $ = id => document.getElementById(id);
 
 // Etiqueta del corte histórico de los bloques de Rubro 08 y Rubro 09. ÚNICO lugar a cambiar cada mes.
-const CORTE_LABEL = "Ene–Oct";
+const CORTE_LABEL = "Ene–Oct";          // Rubro 08 y 09 (sin cambios)
+const B5_CORTE = "Ene–Nov";             // Ranking histórico (Bloque 02)
 
 const fmt  = n => Math.round(n || 0).toLocaleString("es-PE");
 const fmtS = n => "S/ " + fmt(n);
@@ -550,7 +551,7 @@ function b5Filas(anio) {
   } else if (B5_HIST && B5_HIST.datos[String(anio)]) {
     const d = B5_HIST.datos[String(anio)].munis;
     base = Object.keys(d).map(id => ({ id, nombre: (nombres[id] || id).toUpperCase(),
-                                       pia: d[id].pia, pim: d[id].pim, rec: d[id].eneoct }));
+                                       pia: d[id].pia, pim: d[id].pim, rec: d[id].enenov }));
   }
   if (!base) return null;
   return base.map(f => ({ ...f, pct: f.pim > 0 ? f.rec / f.pim * 100 : null, esMPL: f.id === MPL_ID }));
@@ -569,8 +570,8 @@ function renderB5() {
   const porPct   = [...filas].sort((a, b) => (b.pct ?? -1) - (a.pct ?? -1));
   const lista    = b5Orden === "monto" ? porMonto : porPct;
 
-  $("b5thRec").textContent = `Recaudado ${CORTE_LABEL} (S/)`;
-  $("b5meta").textContent  = `${filas.length} municipalidades · ordenado por ${b5Orden === "monto" ? "monto recaudado" : "% de avance"} · ${CORTE_LABEL} ${b5Anio}${enCurso ? " (a la fecha)" : ""}`;
+  $("b5thRec").textContent = `Recaudado ${B5_CORTE} (S/)`;
+  $("b5meta").textContent  = `${filas.length} municipalidades · ordenado por ${b5Orden === "monto" ? "monto recaudado" : "% de avance"} · ${B5_CORTE} ${b5Anio}${enCurso ? " (a la fecha)" : ""}`;
 
   tbody.innerHTML = lista.map((m, i) => {
     const pos      = i + 1;
@@ -604,19 +605,19 @@ function renderB5Linea() {
       return f ? f.rec : null;
     }
     const m = B5_HIST.datos[String(a)].munis[b5Muni];
-    return m ? m.eneoct : null;
+    return m ? m.enenov : null;
   });
   const idxAct = años.indexOf(ANIO_ACTUAL);
   const nombre = (B5_HIST.municipalidades[b5Muni] || "").toUpperCase();
-  $("b5lineaMeta").textContent = `${CORTE_LABEL} ${años[0]}–${años[años.length - 1]} · ${nombre}`;
+  $("b5lineaMeta").textContent = `${B5_CORTE} ${años[0]}–${años[años.length - 1]} · ${nombre}`;
 
   if (b5ChartInstance) { b5ChartInstance.destroy(); b5ChartInstance = null; }
   b5ChartInstance = new Chart(canvas, {
     type: "line",
     data: {
-      labels: años.map(a => a === ANIO_ACTUAL ? `${a} (a la fecha)` : `${CORTE_LABEL} ${a}`),
+      labels: años.map(a => a === ANIO_ACTUAL ? `${a} (a la fecha)` : `${B5_CORTE} ${a}`),
       datasets: [{
-        label: "Recaudado " + CORTE_LABEL, data: valores,
+        label: "Recaudado " + B5_CORTE, data: valores,
         borderColor: "#7a1219", borderWidth: 2.5, backgroundColor: "rgba(154,24,32,.07)",
         fill: true, tension: 0.3, spanGaps: true,
         pointBackgroundColor: años.map(a => a === ANIO_ACTUAL ? "#FFC526" : "#9a1820"),
