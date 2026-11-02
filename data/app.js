@@ -1,7 +1,7 @@
 const $ = id => document.getElementById(id);
 
 // Etiqueta del corte histórico de los bloques de Rubro 08 y Rubro 09. ÚNICO lugar a cambiar cada mes.
-const CORTE_LABEL = "Ene–Oct";          // Rubro 08 y 09 (sin cambios)
+const CORTE_LABEL = "Ene–Nov";          // Rubro 08 y 09
 const B5_CORTE = "Ene–Nov";             // Ranking histórico (Bloque 02)
 
 const fmt  = n => Math.round(n || 0).toLocaleString("es-PE");
