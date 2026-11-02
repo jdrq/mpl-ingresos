@@ -44,7 +44,7 @@ CARPETA_RUBRO09 = Path("xlsrubro09")
 JSON_PATH       = Path("data") / "historico_conceptos_rubro09.json"
 
 # Campo del JSON que guarda el corte "Ene-<mes>". ÚNICO lugar a cambiar cada mes.
-CAMPO_CORTE = "eneoct"
+CAMPO_CORTE = "enenov"
 
 
 def leer_filas(archivo):
